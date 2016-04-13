@@ -8,7 +8,7 @@
         <param-value>classpath*:spring/*.xml</param-value>
     </context-param>
  
-    <!-- 编码过虑 -->
+    <!-- 编码过滤 -->
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -31,6 +31,11 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
  
+ 	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
+ 
     <!-- Spring MVC DispatcherServlet -->
     <servlet>
         <servlet-name>springMVC</servlet-name>
@@ -50,5 +55,10 @@
     <welcome-file-list>
         <welcome-file>/WEB-INF/jsp/index.jsp</welcome-file>
     </welcome-file-list>
+    
+    <error-page>
+    	<error-code>404</error-code>
+    	<location>/WEB-INF/jsp/error.jsp</location>
+    </error-page>
     
 </web-app>

@@ -15,38 +15,77 @@
   	<developerConnection>ifplusor</developerConnection>
   </scm>
   
+  <properties>
+	<jdk.version>1.8</jdk.version>
+	<jetty.version>9.3.7.v20160115</jetty.version>
+  	<junit.version>3.8.1</junit.version>
+  	<servlet.version>3.0-alpha-1</servlet.version>
+  	<jsp.version>2.2</jsp.version>
+	<spring.version>4.2.5.RELEASE</spring.version>
+	<log4j.version>1.2.17</log4j.version>
+	<xstream.version>1.4.9</xstream.version>
+	<jackson.version>2.7.3</jackson.version>
+  </properties>
+	
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>${junit.version}</version>
+		<scope>test</scope>
     </dependency>
     
     <dependency>
     	<groupId>javax.servlet</groupId>
     	<artifactId>servlet-api</artifactId>
-    	<version>3.0-alpha-1</version>
+    	<version>${servlet.version}</version>
     	<scope>provided</scope>
     </dependency>
     	<dependency>
 		<groupId>javax.servlet.jsp</groupId>
 		<artifactId>jsp-api</artifactId>
-		<version>2.2</version>
+		<version>${jsp.version}</version>
 		<scope>provided</scope>
 	</dependency>
 	
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-webmvc</artifactId>
-		<version>4.2.5.RELEASE</version>
-		<scope>compile</scope>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-oxm</artifactId>
+		<version>${spring.version}</version>
 	</dependency>
 	
 	<dependency>
 		<groupId>log4j</groupId>
 		<artifactId>log4j</artifactId>
-		<version>1.2.17</version>
+		<version>${log4j.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>com.thoughtworks.xstream</groupId>
+		<artifactId>xstream</artifactId>
+		<version>${xstream.version}</version>
+	</dependency>
+	
+	
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-core</artifactId>
+		<version>${jackson.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-annotations</artifactId>
+		<version>${jackson.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-databind</artifactId>
+		<version>${jackson.version}</version>
 	</dependency>
   </dependencies>
   
@@ -58,14 +97,24 @@
         <plugin>  
             <groupId>org.eclipse.jetty</groupId>
   			<artifactId>jetty-maven-plugin</artifactId>
-  			<version>9.3.7.v20160115</version>
+  			<version>${jetty.version}</version>
             <configuration>  
                 <scanIntervalSeconds>3</scanIntervalSeconds>  
                 <webApp>
       				<contextPath>/</contextPath>
     			</webApp>
             </configuration>  
-        </plugin>  
+        </plugin>
+        
+        <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>2.3.2</version>
+			<configuration>
+				<source>${jdk.version}</source>
+				<target>${jdk.version}</target>
+			</configuration>
+		</plugin>  
     </plugins>  
   </build>
   
