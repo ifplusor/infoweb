@@ -38,6 +38,7 @@
     </xsd:complexType>
 
     <xsd:complexType name="Include">
+        <xsd:attribute name="optional" use="optional" type="xsd:boolean"/>
         <xsd:attribute name="file" use="optional" type="xsd:string"/>
         <xsd:attribute name="resource" use="optional" type="xsd:string"/>
         <xsd:attribute name="url" use="optional" type="xsd:string"/>
@@ -147,9 +148,13 @@
     </xsd:complexType>
 
     <xsd:complexType name="Encoder">
-        <xsd:sequence>
-            <xsd:element name="pattern" type="xsd:string"/>
-        </xsd:sequence>
+        <xsd:choice maxOccurs="unbounded">
+            <xsd:element name="pattern" type="xsd:string" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="layout" minOccurs="0" maxOccurs="1" type="Layout" />
+            <xsd:element name="immediateFlush" type="xsd:boolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="outputPatternAsHeader" type="xsd:boolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="charset" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        </xsd:choice>
         <xsd:attribute name="class" type="xsd:string" use="optional"/>
     </xsd:complexType>
 
@@ -182,15 +187,15 @@
             </xsd:simpleType>
             <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
-                    <xsd:pattern value="[Oo][Ff]{2}"/>
-                    <xsd:pattern value="[Aa][Ll]{2}"/>
-                    <xsd:pattern value="[Ii][Nn][Hh][Ee][Rr][Ii][Tt][Ee][Dd]"/>
-                    <xsd:pattern value="[Nn][Uu][Ll]{2}"/>
-                    <xsd:pattern value="[Ee][Rr]{2}[Oo][Rr]"/>
-                    <xsd:pattern value="[Ww][Aa][Rr][Nn]"/>
-                    <xsd:pattern value="[Ii][Nn][Ff][Oo]"/>
-                    <xsd:pattern value="[Dd][Ee][Bb][Uu][Gg]"/>
-                    <xsd:pattern value="[Tt][Rr][Aa][Cc][Ee]"/>
+                    <xsd:pattern value="($\{.+:-)?[Oo][Ff]{2}\}?"/>
+                    <xsd:pattern value="($\{.+:-)?[Aa][Ll]{2}\}?"/>
+                    <xsd:pattern value="($\{.+:-)?[Ii][Nn][Hh][Ee][Rr][Ii][Tt][Ee][Dd]\}?"/>
+                    <xsd:pattern value="($\{.+:-)?[Nn][Uu][Ll]{2}\}?"/>
+                    <xsd:pattern value="($\{.+:-)?[Ee][Rr]{2}[Oo][Rr]\}?"/>
+                    <xsd:pattern value="($\{.+:-)?[Ww][Aa][Rr][Nn]\}?"/>
+                    <xsd:pattern value="($\{.+:-)?[Ii][Nn][Ff][Oo]\}?"/>
+                    <xsd:pattern value="($\{.+:-)?[Dd][Ee][Bb][Uu][Gg]\}?"/>
+                    <xsd:pattern value="($\{.+:-)?[Tt][Rr][Aa][Cc][Ee]\}?"/>
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:union>
