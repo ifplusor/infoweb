@@ -27,6 +27,9 @@
 	<slf4j.version>1.7.21</slf4j.version>
 	<logback.version>1.1.7</logback.version>
 	<logback-spring.version>0.1.4</logback-spring.version>
+	<flyway.version>4.0</flyway.version>
+	<mysql.version>5.1.38</mysql.version>
+	<dbcp.version>2.1.1</dbcp.version>
   </properties>
 	
   <dependencies>
@@ -110,6 +113,23 @@
         <version>${logback-spring.version}</version>
     </dependency>  
     
+    <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>${flyway.version}</version>
+    </dependency>
+    
+    <dependency>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	    <version>${mysql.version}</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-dbcp2</artifactId>
+	    <version>${dbcp.version}</version>
+	</dependency>
   </dependencies>
   
   <build>
