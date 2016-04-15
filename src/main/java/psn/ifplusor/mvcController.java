@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/mvc")
 public class mvcController {
-	private Logger logger = LoggerFactory.getLogger(mvcController.class);
+	private static final Logger logger = LoggerFactory.getLogger(mvcController.class);
 
     @RequestMapping("/hello")
     public String hello(){

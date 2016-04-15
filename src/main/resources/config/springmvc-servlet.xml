@@ -10,6 +10,8 @@
     <!-- scan the package and the sub package -->
     <context:component-scan base-package="psn.ifplusor"/>
  
+    <mvc:resources mapping="/static/**" location="/WEB-INF/static/" />  
+    
     <!-- don't handle the static resource -->
     <mvc:default-servlet-handler />
  
