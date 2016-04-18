@@ -53,7 +53,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>springmvc</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
  
     <display-name>infoweb</display-name>

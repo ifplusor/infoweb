@@ -22,7 +22,7 @@ public class mvcController {
     }
     
     @RequestMapping("/print/{id}")
-    public ModelAndView pring(@PathVariable String id) {
+    public ModelAndView print(@PathVariable String id) {
     	logger.debug("In print.");
     	
     	Map<String, Object> model = new HashMap<String, Object>();
