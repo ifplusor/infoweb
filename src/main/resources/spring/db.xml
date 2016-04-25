@@ -1,34 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">     
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd ">     
 
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-	    <property name="driverClassName" value="${db.driverClassName}" />
-	    <property name="url" value="${db.url}" />
-	    <property name="username" value="${db.username}" />
-	    <property name="password" value="${db.password}" />
-	    
-	    <!-- 连接初始值，连接池启动时创建的连接数量的初始值 -->
-	    <property name="initialSize" value="${db.initialSize}" />
-	    <!-- 连接池的最大值，同一时间可以从池分配的最多连接数量，0时无限制 -->
-	    <property name="maxTotal" value="${db.maxTotal}" />
-	    <!-- 最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止 ，0时无限制-->
-	    <property name="maxIdle" value="${db.maxIdle}" />
-	    <!-- 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请 -->
-	    <property name="minIdle" value="${db.minIdle}" />
-	    <!-- 是否对已备语句进行池管理（布尔值），是否对PreparedStatement进行缓存 -->
-	    <property name="poolPreparedStatements" value="true" />
-	    <!-- 是否对sql进行自动提交 -->
-	    <property name="defaultAutoCommit" value="true" />
-	</bean>
+        <property name="driverClassName" value="${db.driverClassName}" />
+        <property name="url" value="${db.url}" />
+        <property name="username" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+        
+        <!-- 连接初始值，连接池启动时创建的连接数量的初始值 -->
+        <property name="initialSize" value="${db.initialSize}" />
+        <!-- 连接池的最大值，同一时间可以从池分配的最多连接数量，0时无限制 -->
+        <property name="maxTotal" value="${db.maxTotal}" />
+        <!-- 最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止 ，0时无限制-->
+        <property name="maxIdle" value="${db.maxIdle}" />
+        <!-- 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请 -->
+        <property name="minIdle" value="${db.minIdle}" />
+        <!-- 是否对已备语句进行池管理（布尔值），是否对PreparedStatement进行缓存 -->
+        <property name="poolPreparedStatements" value="true" />
+        <!-- 是否对sql进行自动提交 -->
+        <property name="defaultAutoCommit" value="true" />
+    </bean>
 
-	<bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
-	    <property name="dataSource" ref="dataSource"/>
-	    <property name="locations" value="classpath:dbmigrate/mysql/"/>
-	</bean>
-	
-	<!-- The rest of the application (incl. Hibernate) -->
-	<!-- Must be run after Flyway to ensure the database is compatible with the code -->
-	<!-- <bean id="sessionFactory" class="" depends-on="flyway">
-	</bean> -->
+    <bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="locations" value="classpath:dbmigrate/mysql/"/>
+    </bean>
+    
+    <!-- The rest of the application (incl. Hibernate) -->
+    <!-- Must be run after Flyway to ensure the database is compatible with the code -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="flyway">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="${application.domain.packages}"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialet">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- 配置事务管理 -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+    
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="txPointcut" expression="execution(* psn.ifplusor.infoweb.persistence.manager.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config>
+
 </beans>

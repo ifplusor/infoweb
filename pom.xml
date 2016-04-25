@@ -11,59 +11,74 @@
   <url>https://github.com/ifplusor/infoweb</url>
   
   <scm>
-  	<url>https://github.com/ifplusor/infoweb</url>
-  	<developerConnection>ifplusor</developerConnection>
+      <url>https://github.com/ifplusor/infoweb</url>
+      <developerConnection>ifplusor</developerConnection>
   </scm>
   
   <properties>
-	<jdk.version>1.8</jdk.version>
-	<jetty.version>9.3.7.v20160115</jetty.version>
-  	<junit.version>3.8.1</junit.version>
-  	<servlet.version>3.0-alpha-1</servlet.version>
-  	<jsp.version>2.2</jsp.version>
-	<spring.version>4.2.5.RELEASE</spring.version>
-	<xstream.version>1.4.9</xstream.version>
-	<jackson.version>2.7.3</jackson.version>
-	<slf4j.version>1.7.21</slf4j.version>
-	<logback.version>1.1.7</logback.version>
-	<logback-spring.version>0.1.4</logback-spring.version>
-	<flyway.version>4.0</flyway.version>
-	<mysql.version>5.1.38</mysql.version>
-	<dbcp.version>2.1.1</dbcp.version>
+    <jdk.version>1.8</jdk.version>
+    <jetty.version>9.3.7.v20160115</jetty.version>
+    <junit.version>3.8.1</junit.version>
+    <servlet.version>3.0-alpha-1</servlet.version>
+    <jsp.version>2.2</jsp.version>
+    <jstl.version>1.2</jstl.version>
+    <spring.version>4.2.5.RELEASE</spring.version>
+    <spring-dao.version>2.0.8</spring-dao.version>
+    <xstream.version>1.4.9</xstream.version>
+    <jackson.version>2.7.3</jackson.version>
+    <slf4j.version>1.7.21</slf4j.version>
+    <logback.version>1.1.7</logback.version>
+    <logback-spring.version>0.1.4</logback-spring.version>
+    <flyway.version>4.0</flyway.version>
+    <mysql.version>5.1.38</mysql.version>
+    <hibernate.version>5.1.0.Final</hibernate.version>
+    <hibernate-annotations.version>3.5.6-Final</hibernate-annotations.version>
+    <dbcp.version>2.1.1</dbcp.version>
+    <aspectj.version>1.8.9</aspectj.version>
   </properties>
-	
+    
   <dependencies>
     <dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<version>${junit.version}</version>
-		<scope>test</scope>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
     </dependency>
     
     <dependency>
-    	<groupId>javax.servlet</groupId>
-    	<artifactId>servlet-api</artifactId>
-    	<version>${servlet.version}</version>
-    	<scope>provided</scope>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>${servlet.version}</version>
+        <scope>provided</scope>
     </dependency>
-    	<dependency>
-		<groupId>javax.servlet.jsp</groupId>
-		<artifactId>jsp-api</artifactId>
-		<version>${jsp.version}</version>
-		<scope>provided</scope>
-	</dependency>
-	
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-webmvc</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-oxm</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
+        <dependency>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>${jsp.version}</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>jstl</groupId>
+        <artifactId>jstl</artifactId>
+        <version>${jstl.version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-oxm</artifactId>
+        <version>${spring.version}</version>
+    </dependency>
+    <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-websocket</artifactId>
         <version>${spring.version}</version>
@@ -73,29 +88,39 @@
         <artifactId>spring-messaging</artifactId>
         <version>${spring.version}</version>
     </dependency>
-	
-	<dependency>
-		<groupId>com.thoughtworks.xstream</groupId>
-		<artifactId>xstream</artifactId>
-		<version>${xstream.version}</version>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-dao</artifactId>
+	    <version>${spring-dao.version}</version>
 	</dependency>
-	
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-core</artifactId>
-		<version>${jackson.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-annotations</artifactId>
-		<version>${jackson.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-databind</artifactId>
-		<version>${jackson.version}</version>
-	</dependency>
-	
+    
+    <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${xstream.version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+    </dependency>
+    
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
@@ -120,15 +145,32 @@
     </dependency>
     
     <dependency>
-	    <groupId>mysql</groupId>
-	    <artifactId>mysql-connector-java</artifactId>
-	    <version>${mysql.version}</version>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-annotations</artifactId>
+	    <version>${hibernate-annotations.version}</version>
 	</dependency>
-	
-	<dependency>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-dbcp2</artifactId>
-	    <version>${dbcp.version}</version>
+    
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-dbcp2</artifactId>
+        <version>${dbcp.version}</version>
+    </dependency>
+    
+    <dependency>
+	    <groupId>org.aspectj</groupId>
+	    <artifactId>aspectjweaver</artifactId>
+	    <version>${aspectj.version}</version>
 	</dependency>
   </dependencies>
   
@@ -139,25 +181,25 @@
         <!-- jetty插件 -->  
         <plugin>  
             <groupId>org.eclipse.jetty</groupId>
-  			<artifactId>jetty-maven-plugin</artifactId>
-  			<version>${jetty.version}</version>
+              <artifactId>jetty-maven-plugin</artifactId>
+              <version>${jetty.version}</version>
             <configuration>  
                 <scanIntervalSeconds>3</scanIntervalSeconds>  
                 <webApp>
-      				<contextPath>/</contextPath>
-    			</webApp>
+                      <contextPath>/</contextPath>
+                </webApp>
             </configuration>  
         </plugin>
         
         <plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>2.3.2</version>
-			<configuration>
-				<source>${jdk.version}</source>
-				<target>${jdk.version}</target>
-			</configuration>
-		</plugin>  
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+                <source>${jdk.version}</source>
+                <target>${jdk.version}</target>
+            </configuration>
+        </plugin>  
     </plugins>  
   </build>
   
