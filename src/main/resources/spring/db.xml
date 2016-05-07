@@ -32,7 +32,8 @@
     
     <!-- The rest of the application (incl. Hibernate) -->
     <!-- Must be run after Flyway to ensure the database is compatible with the code -->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="flyway">
+    
+    <!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="flyway">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="${application.domain.packages}"/>
         <property name="hibernateProperties">
@@ -42,14 +43,35 @@
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
             </props>
         </property>
+    </bean> -->
+    
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="packagesToScan" value="${application.domain.packages}"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialet">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+            </props>
+        </property>
     </bean>
 
     <!-- 配置事务管理 -->
-    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <!-- <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
+    </bean> -->
+    
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
     
-    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    <!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="get*" read-only="true"/>
             <tx:method name="*"/>
@@ -59,6 +81,6 @@
     <aop:config proxy-target-class="true">
         <aop:pointcut id="txPointcut" expression="execution(* psn.ifplusor.infoweb.persistence.manager.*.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
-    </aop:config>
+    </aop:config> -->
 
 </beans>
