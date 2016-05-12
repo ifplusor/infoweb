@@ -24,6 +24,7 @@
     <jstl.version>1.2</jstl.version>
     <spring.version>4.2.5.RELEASE</spring.version>
     <spring-dao.version>2.0.8</spring-dao.version>
+    <spring-security.version>4.1.0.RELEASE</spring-security.version>
     <xstream.version>1.4.9</xstream.version>
     <jackson.version>2.7.3</jackson.version>
     <slf4j.version>1.7.21</slf4j.version>
@@ -98,6 +99,17 @@
 	    <artifactId>spring-dao</artifactId>
 	    <version>${spring-dao.version}</version>
 	</dependency>
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-web</artifactId>
+	    <version>${spring-security.version}</version>
+	</dependency>
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring-security.version}</version>
+    </dependency>
+	
     
     <dependency>
         <groupId>com.thoughtworks.xstream</groupId>
