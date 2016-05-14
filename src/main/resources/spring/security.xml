@@ -14,18 +14,32 @@
     <http pattern="/**/*.gif" security="none" />  
     <http pattern="/**/*.png" security="none" />  
     <http pattern="/**/*.ico" security="none" />  
-    
+
     <http auto-config="true" use-expressions="false">
-        <intercept-url pattern="/mvc/print/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/**" access="ROLE_USER" />
+        <custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
+        <form-login login-page="/login.jsp" authentication-failure-url="/login.jsp?error=true" default-target-url="/" />
     </http>
+
+    <beans:bean id="filterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor" autowire="byType">
+        <beans:property name="securityMetadataSource" ref="filterInvocationSecurityMetadataSource" />
+        <beans:property name="authenticationManager" ref="org.springframework.security.authenticationManager"/>
+    </beans:bean>
+
+    <beans:bean id="filterInvocationSecurityMetadataSource" class="psn.ifplusor.core.security.JdbcFilterInvocationDefinitionSourceFactoryBean">
+        <beans:property name="dataSource" ref="dataSource"/>
+        <beans:property name="resourceQuery" value="select re.res_string,r.name from security_role r
+                                                    join security_resc_role rr on r.id=rr.role_id
+                                                    join security_resc re on re.id=rr.resc_id
+                                                    order by re.priority"/>
+    </beans:bean>
 
     <authentication-manager>  
         <authentication-provider>  
-            <user-service>  
-                <user name="admin" password="admin" authorities="ROLE_USER,ROLE_ADMIN"/>
-                <user name="user" password="user" authorities="ROLE_USER" />
-            </user-service>  
+            <jdbc-user-service data-source-ref="dataSource"
+                users-by-username-query="select username,password,status as enabled from security_user where username=?"
+                authorities-by-username-query="select u.username,r.name as authority from security_user u
+                                               join security_user_role ur on u.id=ur.user_id 
+                                               join security_role r on r.id=ur.role_id where u.username=?"/>
         </authentication-provider>  
-    </authentication-manager> 
+    </authentication-manager>
 </beans:beans>
