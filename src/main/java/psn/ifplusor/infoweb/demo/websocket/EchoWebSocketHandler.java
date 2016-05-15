@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.websocket;
+package psn.ifplusor.infoweb.demo.websocket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

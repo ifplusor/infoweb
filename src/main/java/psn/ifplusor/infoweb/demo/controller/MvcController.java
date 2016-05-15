@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.controller;
+package psn.ifplusor.infoweb.demo.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,26 +8,38 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import psn.ifplusor.infoweb.persistence.domain.TestData;
-import psn.ifplusor.infoweb.persistence.manager.TestDataManager;
+import psn.ifplusor.infoweb.demo.persistence.domain.TestData;
+import psn.ifplusor.infoweb.demo.persistence.manager.TestDataManager;
+import psn.ifplusor.infoweb.organization.persistence.domain.StructType;
+import psn.ifplusor.infoweb.organization.persistence.manager.TestOrganizationManager;
 
 @Controller
 @RequestMapping("/mvc")
-public class mvcController {
-	private static final Logger logger = LoggerFactory.getLogger(mvcController.class);
+public class MvcController {
+	private static final Logger logger = LoggerFactory.getLogger(MvcController.class);
 	
 	@Resource
 	private TestDataManager testDataManager;
+	
+	@Resource
+	private TestOrganizationManager testOrganizationManager;
 
     @RequestMapping("/hello")
-    public String hello(){
+    public ModelAndView hello(){
     	logger.debug("In hello.");
-        return "hello";
+    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+    		    .getAuthentication()
+    		    .getPrincipal();
+    	Map<String, Object> model = new HashMap<String, Object>();
+    	model.put("message", "welcome " + userDetails.getUsername() + "!");
+        return new ModelAndView("hello", model);
     }
     
     @RequestMapping("/print/{id}")
@@ -48,6 +60,9 @@ public class mvcController {
     	try {
     		List<TestData> data = testDataManager.getAllData();
     		model.put("data", data);
+    		
+    		List<StructType> structType = testOrganizationManager.getAllStructTypes();
+    		model.put("structTypes", structType);
     	} catch (Exception e) {
     		e.printStackTrace();
     	}

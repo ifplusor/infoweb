@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.flyway;
+package psn.ifplusor.core.flyway;
 
 import java.io.IOException;
 import java.util.Properties;

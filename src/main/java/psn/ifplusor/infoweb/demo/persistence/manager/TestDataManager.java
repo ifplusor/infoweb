@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.persistence.manager;
+package psn.ifplusor.infoweb.demo.persistence.manager;
 
 import java.util.List;
 
@@ -11,8 +11,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-//import psn.ifplusor.core.hibernate.HibernateEntityDao;
-import psn.ifplusor.infoweb.persistence.domain.TestData;
+import psn.ifplusor.infoweb.demo.persistence.domain.TestData;
 
 @Repository
 //public class TestDataManager extends HibernateEntityDao {

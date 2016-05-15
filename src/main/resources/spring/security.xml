@@ -16,8 +16,14 @@
     <http pattern="/**/*.ico" security="none" />  
 
     <http auto-config="true" use-expressions="false">
-        <custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
         <form-login login-page="/login.jsp" authentication-failure-url="/login.jsp?error=true" default-target-url="/" />
+        <anonymous username="Guest"/>
+        <session-management session-fixation-protection="migrateSession">
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>
+        </session-management>
+        <access-denied-handler ref="accessDeniedHandler"/>
+        <custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
+        <custom-filter position="SWITCH_USER_FILTER" ref="switchUserProcessingFilter" />
     </http>
 
     <beans:bean id="filterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor" autowire="byType">
@@ -27,19 +33,39 @@
 
     <beans:bean id="filterInvocationSecurityMetadataSource" class="psn.ifplusor.core.security.JdbcFilterInvocationDefinitionSourceFactoryBean">
         <beans:property name="dataSource" ref="dataSource"/>
-        <beans:property name="resourceQuery" value="select re.res_string,r.name from security_role r
+        <beans:property name="resourceQuery" value="select re.resc_string,r.name from security_role r
                                                     join security_resc_role rr on r.id=rr.role_id
                                                     join security_resc re on re.id=rr.resc_id
+                                                    where re.resc_type='URL'
                                                     order by re.priority"/>
     </beans:bean>
+    
+    <beans:bean id="accessDeniedHandler" class="psn.ifplusor.core.security.LocalAccessDeniedHandler"/>
+
+	<beans:bean id="switchUserProcessingFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter" autowire="byType">
+	    <beans:property name="targetUrl" value="/index.jsp"/>
+	</beans:bean>
 
     <authentication-manager>  
-        <authentication-provider>  
+        <!-- <authentication-provider user-service-ref="userDetailsService"/> -->
+        <authentication-provider>
+            <password-encoder hash="md5">
+                <salt-source system-wide="infoweb"/>
+            </password-encoder>
             <jdbc-user-service data-source-ref="dataSource"
                 users-by-username-query="select username,password,status as enabled from security_user where username=?"
-                authorities-by-username-query="select u.username,r.name as authority from security_user u
+                authorities-by-username-query="select u.username,r.name as authority from security_user u 
                                                join security_user_role ur on u.id=ur.user_id 
-                                               join security_role r on r.id=ur.role_id where u.username=?"/>
-        </authentication-provider>  
+                                               join security_role r on r.id=ur.role_id where u.username=?"
+                group-authorities-by-username-query="select g.id,g.groupname,r.name from security_group g 
+                                                     join security_group_user gu on g.id=gu.group_id 
+                                                     join security_user u on u.id=gu.user_id
+                                                     join security_group_role gr on g.id=gr.group_id
+                                                     join security_role r on r.id=gr.role_id
+                                                     where u.username=?"/>
+        </authentication-provider>
     </authentication-manager>
+    
+    <!-- <beans:bean id="userDetailsService" class="psn.ifplusor.core.security.UserInfoService"/> -->
+
 </beans:beans>

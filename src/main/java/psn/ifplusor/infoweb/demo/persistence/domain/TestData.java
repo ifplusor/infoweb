@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.persistence.domain;
+package psn.ifplusor.infoweb.demo.persistence.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
