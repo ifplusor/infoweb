@@ -71,8 +71,9 @@ create table security_group_role (
     constraint fk_group_role_role foreign key(role_id) references security_role(id)
 );
 
-insert into security_user(id,username,password,status,descn) values(1,'admin',md5('admin{infoweb}'),1,'管理员');
-insert into security_user(id,username,password,status,descn) values(2,'user',md5('user{infoweb}'),1,'用户');
+insert into security_user(id,username,password,status,descn) values(1,'ifplusor',md5('infoweb{infoweb}'),1,'super');
+insert into security_user(id,username,password,status,descn) values(2,'admin',md5('admin{infoweb}'),1,'管理员');
+insert into security_user(id,username,password,status,descn) values(3,'user',md5('user{infoweb}'),1,'用户');
 
 insert into security_role(id,name,descn) values(1,'IS_AUTHENTICATED_ANONYMOUSLY','游客');
 insert into security_role(id,name,descn) values(2,'ROLE_SUPER','超级管理员');
@@ -80,21 +81,24 @@ insert into security_role(id,name,descn) values(3,'ROLE_ADMIN','管理员');
 insert into security_role(id,name,descn) values(4,'ROLE_USER','用户');
 
 insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(1,'','URL','/login.jsp',0,'登陆');
-insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(2,'','URL','/mvc/print/**',1,'');
-insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(3,'','URL','/**',2,'');
+insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(2,'','URL','/super/**',1,'');
+insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(3,'','URL','/mvc/print/**',2,'');
+insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(4,'','URL','/**',3,'');
 
-insert into security_user_role(user_id,role_id) values(1,4);
+insert into security_user_role(user_id,role_id) values(1,2);
+insert into security_user_role(user_id,role_id) values(2,4);
 
 insert into security_resc_role(resc_id,role_id) values(1,1);
-insert into security_resc_role(resc_id,role_id) values(2,3);
+insert into security_resc_role(resc_id,role_id) values(2,2);
 insert into security_resc_role(resc_id,role_id) values(3,3);
-insert into security_resc_role(resc_id,role_id) values(3,4);
+insert into security_resc_role(resc_id,role_id) values(4,3);
+insert into security_resc_role(resc_id,role_id) values(4,4);
 
 insert into security_group(id,groupname,descn) values(1,'admin','管理员组');
 insert into security_group(id,groupname,descn) values(2,'user','用户组');
 
-insert into security_group_user(group_id,user_id) values(1,1);
-insert into security_group_user(group_id,user_id) values(2,2);
+insert into security_group_user(group_id,user_id) values(1,2);
+insert into security_group_user(group_id,user_id) values(2,3);
 
 insert into security_group_role(group_id,role_id) values(1,3);
 insert into security_group_role(group_id,role_id) values(2,4);

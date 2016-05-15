@@ -12,8 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import psn.ifplusor.infoweb.security.persistence.domain.User;
-import psn.ifplusor.infoweb.security.persistence.manager.UserManager;
+import psn.ifplusor.infoweb.security.persistence.User;
+import psn.ifplusor.infoweb.security.persistence.UserDao;
 
 @Controller
 @RequestMapping("/security/user")
@@ -22,13 +22,13 @@ public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Resource
-	private UserManager userManager;
+	private UserDao userDao;
 	
 	@RequestMapping("/list")
 	public ModelAndView getList() {
 		logger.debug("In UserController#getList().");
 		
-		List<User> userList = userManager.getAll();
+		List<User> userList = userDao.getAll();
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("userList", userList);

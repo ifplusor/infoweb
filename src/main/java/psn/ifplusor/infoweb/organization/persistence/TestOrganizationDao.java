@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.organization.persistence.manager;
+package psn.ifplusor.infoweb.organization.persistence;
 
 import java.util.List;
 import java.util.Set;
@@ -10,16 +10,15 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import psn.ifplusor.infoweb.organization.persistence.domain.EntityType;
-import psn.ifplusor.infoweb.organization.persistence.domain.StructType;
+import psn.ifplusor.infoweb.organization.persistence.EntityType;
+import psn.ifplusor.infoweb.organization.persistence.StructType;
 
 @Repository
-public class TestOrganizationManager {
+public class TestOrganizationDao {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Transactional
 	public Set<EntityType> getAllData() {
 		String hql = "from StructType";
 		Query query = entityManager.createQuery(hql);
@@ -32,7 +31,6 @@ public class TestOrganizationManager {
 			return null;
 	}
 	
-	@Transactional
 	public List<StructType> getAllStructTypes() {
 		String hql = "from StructType";
 		Query query = entityManager.createQuery(hql);

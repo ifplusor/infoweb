@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.demo.persistence.manager;
+package psn.ifplusor.infoweb.demo.persistence;
 
 import java.util.List;
 
@@ -11,23 +11,18 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import psn.ifplusor.infoweb.demo.persistence.domain.TestData;
+import psn.ifplusor.infoweb.demo.persistence.TestData;
 
 @Repository
-//public class TestDataManager extends HibernateEntityDao {
-public class TestDataManager {
+public class TestDataDao {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Transactional
 	public List<TestData> getAllData() {
 		String hql = "from TestData";
-//		Session session = getSession();
-//		Query query = session.createQuery(hql);
 		Query query = entityManager.createQuery(hql);
 		
 		return query.getResultList();
-		//return query.list();
 	}
 }

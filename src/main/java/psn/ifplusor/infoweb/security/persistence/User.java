@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.security.persistence.domain;
+package psn.ifplusor.infoweb.security.persistence;
 
 import java.util.Set;
 
@@ -71,7 +71,7 @@ public class User implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "security_user_role",
 			joinColumns={@JoinColumn(name = "user_id", referencedColumnName = "id")},
 			inverseJoinColumns={@JoinColumn(name = "role_id", referencedColumnName = "id")})

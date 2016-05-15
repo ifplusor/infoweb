@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.organization.persistence.domain;
+package psn.ifplusor.infoweb.organization.persistence;
 
 import java.util.Set;
 

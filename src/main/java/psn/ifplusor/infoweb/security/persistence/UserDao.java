@@ -1,4 +1,4 @@
-package psn.ifplusor.infoweb.security.persistence.manager;
+package psn.ifplusor.infoweb.security.persistence;
 
 import java.util.List;
 
@@ -9,15 +9,14 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import psn.ifplusor.infoweb.security.persistence.domain.User;
+import psn.ifplusor.infoweb.security.persistence.User;
 
 @Repository
-public class UserManager {
+public class UserDao {
 
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	@Transactional
 	public List<User> getAll() {
 		String hql = "from User";
 		Query query = entityManager.createQuery(hql);
@@ -25,5 +24,13 @@ public class UserManager {
 		List<User> userList = query.getResultList();
 		
 		return userList;
+	}
+	
+	public User getUserByName(String username) {
+		String jpql = "from User u where u.username=?";
+		Query query = entityManager.createQuery(jpql);
+		query.setParameter(1, username);
+		
+		return (User) query.getSingleResult();
 	}
 }

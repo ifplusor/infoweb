@@ -34,7 +34,7 @@ public class FileUtil {
     	try {
     		in = FileUtil.class.getClassLoader().getResourceAsStream("config/infoweb.properties");
     		pps.load(in);
-			FILEDIR = pps.getProperty("application.filedir");
+			FILEDIR = pps.getProperty("cms.filedir");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
