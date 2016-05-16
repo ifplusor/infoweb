@@ -2,6 +2,7 @@ package psn.ifplusor.infoweb.cms.service;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,7 @@ public class VirtualFilesystemService {
 
 	/**
 	 * 获取子目录名列表
+	 * @note 无安全检查
 	 */
 	private List<String> getChildFolderList(Folder folder) {
 		List<String> folders = new ArrayList<String>();
@@ -104,17 +106,28 @@ public class VirtualFilesystemService {
 				folders.add(childFolder.getName());
 			}
 		}
+		folders.sort(new Comparator<String>(){
+			public int compare(String arg0, String arg1) {
+				return arg0.compareTo(arg1);
+			}
+		});
 		return folders;
 	}
 	
 	/**
 	 * 获取子文件名列表
+	 * @note 无安全检查
 	 */
 	private List<String> getChildFileList(Folder folder) {
 		List<String> files = new ArrayList<String>();
 		for (File childFile : folder.getFiles()) {
 			files.add(childFile.getName());
 		}
+		files.sort(new Comparator<String>(){
+			public int compare(String arg0, String arg1) {
+				return arg0.compareTo(arg1);
+			}
+		});
 		return files;
 	}
 
@@ -213,7 +226,7 @@ public class VirtualFilesystemService {
 	}
 	
 	@Transactional
-	public int renameFolder(String path, String name) {
+	public int modifyFolder(String path, String name) {
 		
 		return 0;
 	}
@@ -225,7 +238,7 @@ public class VirtualFilesystemService {
 	}
 	
 	@Transactional
-	public int renameFile(String path, String name) {
+	public int modifyFile(String path, String name) {
 		
 		return 0;
 	}

@@ -23,7 +23,7 @@
     </style>  
   </head>  
   <body>
-    <c:if test="${result != 0}">
+    <c:if test="${msg != null}">
         message: ${msg} <br/><br/>
     </c:if>
   
