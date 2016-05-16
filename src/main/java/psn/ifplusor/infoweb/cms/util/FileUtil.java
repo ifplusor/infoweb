@@ -26,6 +26,8 @@ public class FileUtil {
 	
 	public static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
 	
+	public static final String URI_PREFIX_CMS = "cms://";
+	
     private static String FILEDIR = "/home/infoweb";
     
     static {
@@ -55,17 +57,24 @@ public class FileUtil {
         }
     }
     
+    /**
+     * 通过短路径取得文件符
+     * 
+     * @param path 短路径
+     * @return
+     * @throws FileNotFoundException
+     */
     public static File getFile(String path) throws FileNotFoundException {
     	
-        String searchPath = null;
+        String fullPath = null;
         if (path.startsWith("/"))
-        	searchPath = FILEDIR + path;
+        	fullPath = FILEDIR + path;
         else
-        	searchPath = FILEDIR + "/" + path;
+        	fullPath = FILEDIR + "/" + path;
         
-        File file = new File(searchPath);
+        File file = new File(fullPath);
         if (!file.exists()) {
-        	throw new FileNotFoundException("不存在的目录或文件: " + searchPath);
+        	throw new FileNotFoundException("不存在的目录或文件: " + fullPath);
         }
         
         return file;
@@ -105,6 +114,23 @@ public class FileUtil {
         return map;
     }   
     
+    public static String saveMultipartFile(MultipartFile file) throws IOException {
+    	
+    	String filename = file.getOriginalFilename();
+    	String fullPath = initFilePath(filename);
+    	
+    	logger.debug("upload file \"" + filename + "\" to " + fullPath);
+    	
+    	OutputStream out = new FileOutputStream(fullPath);
+        write(file.getInputStream(), out);
+        
+        logger.debug("upload \"" + fullPath + "\" seccussed.");
+        
+        String uri = fullPath.replaceFirst(FILEDIR, URI_PREFIX_CMS);
+        
+        return uri;
+    }
+    
     /**
      * 上传
      * @param request
@@ -121,46 +147,38 @@ public class FileUtil {
             MultipartFile mFile = entry.getValue();
                         
             if(mFile.getSize() != 0 && !"".equals(mFile.getName())){
-            	String filename = mFile.getOriginalFilename();
-            	String path = initFilePath(filename);
-
-            	logger.debug("upload file \"" + filename + "\" to " + path);
-            	
-            	OutputStream out = new FileOutputStream(path);
-                write(mFile.getInputStream(), out);
-                
-                logger.debug("upload \"" + path + "\" seccussed.");
+            	saveMultipartFile(mFile);
             }
         }
     }
     
-    private static String initFilePath(String name) {
+    private static String initFilePath(String filename) {
     	
-    	String path = FILEDIR + "/" + name;
-    	File file = new File(path);
+    	String fullPath = FILEDIR + "/" + filename;
+    	File file = new File(fullPath);
     	while (file.exists()) {
-    		path = file.getParent() + "/" + file.getName() + ".copy";
-    		file = new File(path);
+    		fullPath = file.getParent() + "/" + file.getName() + ".copy";
+    		file = new File(fullPath);
     		logger.debug("make file: " + file.getPath());
     	}
     	
-    	return path;
+    	return fullPath;
     }
     
-    public static void download(String fileName, ServletOutputStream out) {
+    public static void downloadByUri(String uri, ServletOutputStream out) throws FileNotFoundException {
+    	if (uri.startsWith(URI_PREFIX_CMS)) {
+    		download(uri.substring(URI_PREFIX_CMS.length()), out);  
+    	}
+    }
+    
+    public static void download(String path, ServletOutputStream out) throws FileNotFoundException {
+    	FileInputStream in = new FileInputStream(getFile(path));
+    	
         try {
-            FileInputStream in = new FileInputStream(getFile(fileName));
             write(in, out);
-        } catch (FileNotFoundException e) {
-            try {
-                FileInputStream in = new FileInputStream(getFile(new String(fileName.getBytes("iso-8859-1"),"utf-8")));
-                write(in, out);
-            } catch (IOException e1) {              
-                e1.printStackTrace();
-            }
         } catch (IOException e) {
             e.printStackTrace();
-        }       
+        }
     }
     
     /**
@@ -169,8 +187,8 @@ public class FileUtil {
      * @param out
      * @throws IOException
      */
-    public static void write(InputStream in, OutputStream out) throws IOException{
-        try{
+    public static void write(InputStream in, OutputStream out) throws IOException {
+        try {
             byte[] buffer = new byte[1024];
             int bytesRead = -1;
             while ((bytesRead = in.read(buffer)) != -1) {
@@ -180,14 +198,10 @@ public class FileUtil {
         } finally {
             try {
                 in.close();
-            }
-            catch (IOException ex) {
-            }
+            } catch (IOException ex) {}
             try {
                 out.close();
-            }
-            catch (IOException ex) {
-            }
+            } catch (IOException ex) {}
         }
-    }   
+    }
 }

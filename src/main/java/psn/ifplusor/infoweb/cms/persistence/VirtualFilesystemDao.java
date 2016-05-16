@@ -31,6 +31,11 @@ public class VirtualFilesystemDao {
 		entityManager.remove(folder);
 	}
 	
+	public void saveFile(File file) {
+		
+		entityManager.persist(file);
+	}
+
 	public void deleteFile(File file) {
 		
 		entityManager.remove(file);

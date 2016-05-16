@@ -1,6 +1,8 @@
 package psn.ifplusor.infoweb.cms.service;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,15 +10,21 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import psn.ifplusor.infoweb.cms.persistence.File;
 import psn.ifplusor.infoweb.cms.persistence.Folder;
 import psn.ifplusor.infoweb.cms.persistence.VirtualFilesystemDao;
+import psn.ifplusor.infoweb.cms.util.FileUtil;
 import psn.ifplusor.infoweb.security.Service.UserService;
 import psn.ifplusor.infoweb.security.persistence.User;
 
@@ -27,7 +35,7 @@ public class VirtualFilesystemService {
 	private VirtualFilesystemDao virtualFilesystemDao;
 	
 	@Resource
-	private UserService userService;
+	private VirtualFilesystemAuthorityService authorityService;
 	
 	public String getParentPath(String path) throws FileNotFoundException {
 		
@@ -132,7 +140,8 @@ public class VirtualFilesystemService {
 	}
 
 	@Transactional
-	public Map<String, Object> listFolderAndFile(String path) throws FileNotFoundException {
+	public Map<String, Object> listFolderAndFile(String path) 
+			throws PermissionDeniedFileReadException, FileNotFoundException {
 		
 		Object obj = getFolderOrFile(path);
 
@@ -141,11 +150,16 @@ public class VirtualFilesystemService {
 		if (obj instanceof Folder) {
 			Folder folder = (Folder) obj;
 			
+			authorityService.testReadAuthority(folder);
+			
 			map.put("type", 1);
         	map.put("folders", getChildFolderList(folder));
         	map.put("files", getChildFileList(folder));
 		} else {
 			File file = (File) obj;
+			
+			authorityService.testReadAuthority(file);
+			
 			List<String> files = new ArrayList<String>();
 			files.add(file.getName());
 			
@@ -197,9 +211,11 @@ public class VirtualFilesystemService {
 	 * @param name
 	 * @return 0: 创建成功;<br/> 1: 指定路径为文件;<br/> 2: 存在给定名称子项.
 	 * @throws FileNotFoundException 指定路径不存在
+	 * @throws  
 	 */
 	@Transactional
-	public int createFolder(String path, String name) throws FileNotFoundException {
+	public int createFolder(String path, String name)
+			throws PermissionDeniedFileWriteException, FileNotFoundException {
 		
 		Object obj = getFolderOrFile(path);
 		
@@ -208,15 +224,14 @@ public class VirtualFilesystemService {
 		
 		Folder folder = (Folder) obj;
 		
+		authorityService.testWriteAuthority(folder);
+		
 		if (containChildWithName(folder, name))
 			return 2;
 		
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User user = userService.getUserByName(userDetails.getUsername());
-		
 		Folder childFolder = new Folder();
 		childFolder.setParentFolder(folder);
-		childFolder.setOwner(user);
+		childFolder.setOwner(authorityService.getCurrentUser());
 		childFolder.setName(name);
 		childFolder.setAuthority("rw----");	
 		
@@ -232,7 +247,86 @@ public class VirtualFilesystemService {
 	}
 	
 	@Transactional
-	public int createFile(String path, String name) {
+	public int uploadFile(String path, MultipartFile multiFile)
+			throws PermissionDeniedFileWriteException, IOException {
+		
+		Object obj = getFolderOrFile(path);
+		
+		if (obj instanceof File)
+			return 1;
+		
+		Folder folder = (Folder) obj;
+		
+		authorityService.testWriteAuthority(folder);
+		
+		try {
+			String uri = FileUtil.saveMultipartFile(multiFile);
+			
+			File file = new File();
+			file.setParentFolder(folder);
+			file.setOwner(authorityService.getCurrentUser());
+			file.setName(multiFile.getOriginalFilename());
+			file.setAuthority("rw----");
+			file.setUri(uri);
+			
+			virtualFilesystemDao.saveFile(file);
+		} catch (IOException e) {
+			throw e;
+		}
+		
+		return 0;
+	}
+	
+	@Transactional
+	public int downloadFile(String agent, String path, HttpServletResponse response) {
+		
+		try {
+            Object obj = getFolderOrFile(path);
+    		
+    		if (obj instanceof Folder) {
+    			String msg = java.net.URLEncoder.encode("指定路径为目录，不能下载！","utf-8"); 
+    			response.sendRedirect("../ls?pos=" + path + "&result=2&msg=" + msg);
+    			return 1;
+    		}
+    		
+    		File file = (File) obj;
+    		
+    		authorityService.testReadAuthority(file);
+    		
+            String fileName = file.getName();
+            String uri = file.getUri();
+            
+            //中文文件名支持
+            String encodedfileName = null;
+            if (null != agent && -1 != agent.indexOf("MSIE")) {//IE
+                encodedfileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {
+                encodedfileName = new String (fileName.getBytes("UTF-8"), "iso-8859-1");
+            } else {
+                encodedfileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+            }
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedfileName + "\"");
+            
+            FileUtil.downloadByUri(uri, response.getOutputStream());
+		} catch (FileNotFoundException e) {
+			try {
+				String msg = java.net.URLEncoder.encode(e.getMessage(),"utf-8"); 
+				response.sendRedirect("../ls?result=1&msg=" + msg);
+			} catch (IOException e1) {
+				response.setStatus(500);
+			}
+		} catch (PermissionDeniedFileReadException e) {
+			try {
+				String msg = java.net.URLEncoder.encode(e.getMessage(),"utf-8"); 
+				response.sendRedirect("../ls?result=201&msg=" + msg);
+			} catch (IOException e1) {
+				response.setStatus(500);
+			}
+        } catch (UnsupportedEncodingException e) {
+        	response.setStatus(500);
+        } catch (IOException e) {
+        	response.setStatus(500);
+		} 
 		
 		return 0;
 	}
@@ -244,18 +338,25 @@ public class VirtualFilesystemService {
 	}
 	
 	@Transactional
-	public int deleteFolderOrFile(String path) throws FileNotFoundException {
+	public int deleteFolderOrFile(String path)
+			throws PermissionDeniedFileWriteException, FileNotFoundException {
 		
 		Object obj = getFolderOrFile(path);
 		
 		if (obj instanceof Folder) {
 			Folder folder = (Folder) obj;
+			
+			authorityService.testWriteAuthority(folder);
+			
 			if (!folder.getChildFolders().isEmpty() || !folder.getFiles().isEmpty()) {
 				return 1;
 			}
 			virtualFilesystemDao.deleteFolder(folder);
 		} else {
 			File file = (File) obj;
+			
+			authorityService.testWriteAuthority(file);
+			
 			virtualFilesystemDao.deleteFile(file);
 		}
 		return 0;
