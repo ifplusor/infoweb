@@ -24,6 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>  
   <body>
     <h2>Hello World!</h2>
+    <br/><a href="<%=basePath%>cms/ls">虚拟文件系统</a>
     <br/><a href="<%=basePath%>cms/file/list">文件列表</a>
     <br/><a href="<%=basePath%>cms/file/upload">上传文件</a>
   </body>

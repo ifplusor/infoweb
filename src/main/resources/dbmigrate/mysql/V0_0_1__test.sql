@@ -1,6 +1,6 @@
 CREATE TABLE test_data (
  name VARCHAR(25) NOT NULL,
  PRIMARY KEY(name)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO test_data (name) VALUES ('Mr. T');

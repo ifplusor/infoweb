@@ -7,7 +7,7 @@ create table security_resc (
     priority integer,
     descn varchar(200),
     constraint pk_resc primary key(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 角色
 create table security_role (
@@ -15,7 +15,7 @@ create table security_role (
     name varchar(50) not null,
     descn varchar(200),
     constraint pk_role primary key(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 用户
 create table security_user (
@@ -25,7 +25,7 @@ create table security_user (
     status integer not null,
     descn varchar(200),
     constraint pk_user primary key(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 资源角色连接表
 create table security_resc_role (
@@ -34,7 +34,7 @@ create table security_resc_role (
     constraint pk_resc_role primary key(resc_id, role_id),
     constraint fk_resc_role_resc foreign key(resc_id) references security_resc(id),
     constraint fk_resc_role_role foreign key(role_id) references security_role(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 用户角色连接表
 create table security_user_role (
@@ -43,7 +43,7 @@ create table security_user_role (
     constraint pk_user_role primary key(user_id, role_id),
     constraint fk_user_role_user foreign key(user_id) references security_user(id),
     constraint fk_user_role_role foreign key(role_id) references security_role(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 组
 create table security_group (
@@ -51,7 +51,7 @@ create table security_group (
     groupname varchar(50) unique not null,
     descn varchar(200),
     constraint pk_group primary key(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 组用户连接表
 create table security_group_user (
@@ -60,7 +60,7 @@ create table security_group_user (
     constraint pk_group_user primary key(group_id,user_id),
     constraint fk_group_user_group foreign key(group_id) references security_group(id),
     constraint fk_group_user_user foreign key(user_id) references security_user(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 组角色连接表
 create table security_group_role (
@@ -69,7 +69,7 @@ create table security_group_role (
     constraint pk_group_role primary key(group_id,role_id),
     constraint fk_group_role_group foreign key(group_id) references security_group(id),
     constraint fk_group_role_role foreign key(role_id) references security_role(id)
-);
+) engine=InnoDB default charset=utf8;
 
 insert into security_user(id,username,password,status,descn) values(1,'ifplusor',md5('infoweb{infoweb}'),1,'super');
 insert into security_user(id,username,password,status,descn) values(2,'admin',md5('admin{infoweb}'),1,'管理员');

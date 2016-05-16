@@ -4,7 +4,7 @@ create table organization_struct_type (
     name varchar(50) unique not null,
     descn varchar(200),
     constraint pk_st primary key(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 组织机构实体类型
 create table organization_entity_type (
@@ -15,7 +15,7 @@ create table organization_entity_type (
     descn varchar(200),
     constraint pk_et primary key(id),
     constraint fk_et_sti foreign key(struct_type_id) references organization_struct_type(id)
-);
+) engine=InnoDB default charset=utf8;
 
 alter table organization_struct_type add top_entity_type_id bigint;
 alter table organization_struct_type add constraint fk_st_teti foreign key(top_entity_type_id) references organization_struct_type(id);
@@ -27,7 +27,7 @@ create table organization_struct_rule (
     constraint pk_sr primary key(parent_entity_type_id,child_entity_type_id),
     constraint fk_sr_peti foreign key(parent_entity_type_id) references organization_entity_type(id),
     constraint fk_sr_ceti foreign key(child_entity_type_id) references organization_entity_type(id)
-);
+) engine=InnoDB default charset=utf8;
 
 
 -- 组织机构实例
@@ -38,7 +38,7 @@ create table organization_instance (
     descn varchar(200),
     constraint pk_i primary key(id),
     constraint fk_i_ti foreign key(struct_type_id) references organization_struct_type(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 组织机构实例实体（连接表）
 create table organization_instance_entity (
@@ -51,7 +51,7 @@ create table organization_instance_entity (
     constraint pk_ie primary key(id),
     constraint fk_ie_ii foreign key(instance_id) references organization_instance(id),
     constraint fk_ie_eti foreign key(entity_type_id) references organization_entity_type(id)
-);
+) engine=InnoDB default charset=utf8;
 
 -- 组织机构实例结构
 create table organization_instance_struct (
@@ -60,7 +60,7 @@ create table organization_instance_struct (
     constraint pk_is primary key(parent_instance_entity_id,child_instance_entity_id),
     constraint fk_is_piei foreign key(parent_instance_entity_id) references organization_instance_entity(id),
     constraint fk_is_ciei foreign key(child_instance_entity_id) references organization_instance_entity(id)
-);
+) engine=InnoDB default charset=utf8;
 
 
 insert into organization_struct_type(id,name,descn) values(1,'高校','普通高校');
