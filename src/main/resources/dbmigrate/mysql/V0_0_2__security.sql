@@ -98,6 +98,7 @@ insert into security_group(id,groupname,descn) values(1,'admin','管理员组');
 insert into security_group(id,groupname,descn) values(2,'user','用户组');
 
 insert into security_group_user(group_id,user_id) values(1,2);
+insert into security_group_user(group_id,user_id) values(2,1);
 insert into security_group_user(group_id,user_id) values(2,3);
 
 insert into security_group_role(group_id,role_id) values(1,3);

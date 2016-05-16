@@ -23,6 +23,6 @@ create table cms_file (
     constraint fk_file_folder foreign key(parent_folder_id) references cms_folder(id)
 );
 
-insert cms_folder(id,owner_id,parent_folder_id,name,auth,descn) values(1,1,null,'/','rw----','top folder');
+insert cms_folder(id,owner_id,parent_folder_id,name,auth,descn) values(1,1,null,'/','r-rw--','top folder');
 update cms_folder set parent_folder_id = 1 where id = 1;
 alter table cms_folder modify parent_folder_id bigint not null;
