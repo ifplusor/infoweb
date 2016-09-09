@@ -65,7 +65,7 @@
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
         <multipart-config>
-		    <max-file-size>1000000</max-file-size>
+		    <max-file-size>1000000000</max-file-size>
 		</multipart-config>
     </servlet>
     <servlet-mapping>

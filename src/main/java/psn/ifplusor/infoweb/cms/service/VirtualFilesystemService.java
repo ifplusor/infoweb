@@ -10,23 +10,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import psn.ifplusor.infoweb.cms.persistence.File;
 import psn.ifplusor.infoweb.cms.persistence.Folder;
 import psn.ifplusor.infoweb.cms.persistence.VirtualFilesystemDao;
 import psn.ifplusor.infoweb.cms.util.FileUtil;
-import psn.ifplusor.infoweb.security.Service.UserService;
-import psn.ifplusor.infoweb.security.persistence.User;
 
 @Service
 public class VirtualFilesystemService {
@@ -52,9 +45,9 @@ public class VirtualFilesystemService {
 	/**
 	 * 获取由路径指定的对象，目录或文件
 	 * 
-	 * @param path
-	 * @return
-	 * @throws FileNotFoundException
+	 * @param path 待查询的路径
+	 * @return 返回路径指定的文件或目录
+	 * @throws FileNotFoundException 由路径指定的文件或目录不存在
 	 */
 	private Object getFolderOrFile(String path) throws FileNotFoundException {
 		
@@ -98,8 +91,9 @@ public class VirtualFilesystemService {
 	}
 
 	/**
-	 * 获取子目录名列表
-	 * @note 无安全检查
+	 * 获取子目录名列表 <br/>
+	 * <br/>
+	 * <b>Note:</b> 无安全检查
 	 */
 	private List<String> getChildFolderList(Folder folder) {
 		List<String> folders = new ArrayList<String>();
