@@ -22,7 +22,11 @@ public class UserService {
 	
 	public User getCurrentUser() {
 		
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return getUserByName(userDetails.getUsername());
+		return getUserByName(getCurrentUserDetails().getUsername());
+	}
+
+	private UserDetails getCurrentUserDetails() {
+
+		return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
 }

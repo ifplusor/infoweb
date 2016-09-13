@@ -71,7 +71,7 @@ public class User implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "security_user_role",
 			joinColumns={@JoinColumn(name = "user_id", referencedColumnName = "id")},
 			inverseJoinColumns={@JoinColumn(name = "role_id", referencedColumnName = "id")})

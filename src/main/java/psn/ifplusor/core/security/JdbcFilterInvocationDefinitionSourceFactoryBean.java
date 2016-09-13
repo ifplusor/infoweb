@@ -102,6 +102,12 @@ public class JdbcFilterInvocationDefinitionSourceFactoryBean extends JdbcDaoSupp
         }
     }
 
+    /**
+     * 资源映射  <br/>
+     * <br/>
+     * 抽取数据库中配置的 url 及其 授权角色
+     * @see Resource
+     */
     private class ResourceMapping extends MappingSqlQuery<Resource> {
     	
         protected ResourceMapping(DataSource dataSource, String resourceQuery) {

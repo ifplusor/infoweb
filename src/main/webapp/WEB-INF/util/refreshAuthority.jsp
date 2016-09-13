@@ -1,3 +1,4 @@
+<!-- 刷新资源信息 -->
 <%@page import="org.springframework.context.ApplicationContext"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@page import="org.springframework.beans.factory.FactoryBean"%>

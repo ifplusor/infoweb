@@ -1,0 +1,3 @@
+[submodule "logback-XSD"]
+	path = logback-XSD
+	url = https://github.com/enricopulatzo/logback-XSD.git
