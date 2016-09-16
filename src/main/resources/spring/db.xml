@@ -50,10 +50,14 @@
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
         </property>
-        <property name="packagesToScan" value="${application.domain.packages}"/>
+        <property name="packagesToScan">
+            <list>
+                <value>psn.ifplusor.infoweb</value>
+            </list>
+        </property>
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.dialet">${hibernate.dialect}</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
             </props>

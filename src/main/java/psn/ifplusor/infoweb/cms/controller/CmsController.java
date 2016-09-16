@@ -32,8 +32,8 @@ public class CmsController {
 	
 	@RequestMapping("/ls")
     public ModelAndView list(@RequestParam(value="pos", required=false) String pos,
-    						@RequestParam(value="result", required=false) Integer result,
-    						@RequestParam(value="msg", required=false) String message){
+							 @RequestParam(value="result", required=false) Integer result,
+							 @RequestParam(value="msg", required=false) String message){
     	logger.debug("In cms/list");
     	
     	if (pos == null) {
@@ -58,7 +58,7 @@ public class CmsController {
 		} catch (PermissionDeniedFileReadException e) {
 			model.put("msg", e.getMessage());
 			model.put("result", 201);
-			return new ModelAndView("redirect:/", model);
+			return new ModelAndView("redirect:/index", model);
 		} catch (FileNotFoundException e) {
 			model.put("msg", e.getMessage());
 			model.put("result", 1);
@@ -171,7 +171,7 @@ public class CmsController {
 	
 	@RequestMapping("/op/upload")
     public ModelAndView upload(@RequestParam(value="pos") String pos,
-    						@RequestParam("uploadfile") MultipartFile uploadFile) {
+							   @RequestParam("uploadfile") MultipartFile uploadFile) {
 		logger.debug("In cms/op/upload");
 		
 		Map<String, Object> model = new HashMap<String, Object>();

@@ -15,10 +15,13 @@
     <http pattern="/**/*.png" security="none" />
     <http pattern="/**/*.ico" security="none" />
 
-    <http use-expressions="false" create-session="stateless" entry-point-ref="digestEntryPoint">
+    <http use-expressions="false" entry-point-ref="digestEntryPoint">
         <anonymous username="Guest"/>
+        <session-management session-fixation-protection="migrateSession">
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>
+        </session-management>
         <access-denied-handler ref="accessDeniedHandler"/>
-        <custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" />
+        <custom-filter ref="digestFilter" position="DIGEST_AUTH_FILTER" />
         <custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
         <custom-filter ref="switchUserProcessingFilter" position="SWITCH_USER_FILTER" />
     </http>
@@ -70,7 +73,8 @@
     <authentication-manager alias="authenticationManager">
         <!-- <authentication-provider user-service-ref="userDetailsService"/> -->
         <authentication-provider>
-            <!-- <password-encoder hash="md5">
+            <!-- 使用 Digest 认证时，不支持加密
+            <password-encoder hash="md5">
                 <salt-source system-wide="infoweb"/>
             </password-encoder> -->
             <jdbc-user-service id="userDetailsService" data-source-ref="dataSource"

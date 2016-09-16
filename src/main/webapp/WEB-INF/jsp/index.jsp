@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
@@ -23,6 +24,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </style>
   </head>  
   <body>
+    <c:if test="${msg != null}">
+      message: ${msg} <br/><br/>
+    </c:if>
+
     <h2>Hello World!</h2>
     <br/><a href="<%=basePath%>cms/ls">虚拟文件系统</a>
     <br/><a href="<%=basePath%>cms/file/list">文件列表</a>

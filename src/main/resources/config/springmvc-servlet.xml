@@ -8,11 +8,11 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">                    
  
-    <!-- scan the package and the sub package -->
+    <!-- scan the package and the sub package for Controller -->
     <context:component-scan base-package="psn.ifplusor.infoweb" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
- 
+
     <mvc:resources mapping="/static/**" location="/WEB-INF/static/" />  
     
     <!-- don't handle the static resource -->
@@ -42,7 +42,7 @@
                 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
                     <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>  
                     <property name="prefix" value="/WEB-INF/jsp/"/>  
-                    <property name="suffix" value=".jsp"></property>  
+                    <property name="suffix" value=".jsp"/>
                 </bean>  
             </list>  
         </property>  

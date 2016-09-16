@@ -34,7 +34,8 @@ public class UserInfoService implements UserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String username)
-        throws UsernameNotFoundException, DataAccessException {
+            throws UsernameNotFoundException, DataAccessException {
+
         return userMap.get(username);
     }
 }

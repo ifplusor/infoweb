@@ -2,7 +2,18 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
         version="3.0">
-  
+
+    <!--
+        应用服务器启动:
+
+        1. 读 web.xml
+        2. 创建 ServletContext
+        3. 将 context-param 放入 ServletContext
+        4. 创建 listener 实例, 调用 contextInitialized(ServletContextEvent args)
+        5. filter
+        6. servlet
+    -->
+
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath*:spring/*.xml</param-value>
@@ -12,7 +23,23 @@
         <param-name>logbackConfigLocation</param-name>
         <param-value>classpath:config/logback.xml</param-value>
     </context-param>
- 
+
+
+    <!-- Spring 监听器 -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
+
+    <!-- logback 监听器 -->
+    <listener>
+        <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+    </listener>
+
+
     <!-- 编码过滤 -->
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -31,7 +58,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     
-    <!-- spring security必须的过滤器,保证在访问所有的页面时都必须通过认证 -->
+    <!-- spring security 必须的过滤器, 保证在访问所有的页面时都必须通过认证 -->
     <filter>
        <filter-name>springSecurityFilterChain</filter-name>
        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -40,20 +67,8 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-	 
-    <!-- Spring监听 -->
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-    
-    <listener>
-	   <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-	</listener>
-    
-    <listener>
-        <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
-    </listener>
 
+	 
     <!-- Spring MVC DispatcherServlet -->
     <servlet>
         <servlet-name>springmvc</servlet-name>
@@ -62,7 +77,7 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath:config/springmvc-servlet.xml</param-value>
         </init-param>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>1</load-on-startup>validation
         <async-supported>true</async-supported>
         <multipart-config>
 		    <max-file-size>1000000000</max-file-size>
@@ -72,8 +87,10 @@
         <servlet-name>springmvc</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
  
     <display-name>infoweb</display-name>
+
     <welcome-file-list>
         <welcome-file>/WEB-INF/jsp/index.jsp</welcome-file>
     </welcome-file-list>

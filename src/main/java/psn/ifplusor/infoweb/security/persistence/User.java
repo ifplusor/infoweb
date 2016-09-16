@@ -20,6 +20,8 @@ public class User implements java.io.Serializable {
 	private long id;
 	private String username;
 	private String password;
+    private String email;
+	private String phone;
 	private int status;
 	private String description;
 	private Set<Role> roles;
@@ -34,7 +36,7 @@ public class User implements java.io.Serializable {
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "username", unique = true, nullable = false)
 	public String getUsername() {
 		return username;
@@ -52,20 +54,24 @@ public class User implements java.io.Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+	@Column(name = "email")
+	public String getEmail() { return email; }
+
+	public void setEmail(String email) { this.email = email; }
+
+	@Column(name = "phone")
+	public String getPhone() { return phone; }
+
+	public void setPhone(String phone) { this.phone = phone; }
+
 	@Column(name = "status")
-	public int getStatus() {
-		return status;
-	}
-	
-	public void setStatus(int status) {
-		this.status = status;
-	}
-	
+	public int getStatus() { return status; }
+
+	public void setStatus(int status) { this.status = status; }
+
 	@Column(name = "descn")
-	public String getDescription() {
-		return description;
-	}
+	public String getDescription() { return description; }
 	
 	public void setDescription(String description) {
 		this.description = description;

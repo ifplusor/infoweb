@@ -12,8 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import psn.ifplusor.infoweb.demo.persistence.TestData;
@@ -22,7 +24,6 @@ import psn.ifplusor.infoweb.organization.persistence.StructType;
 import psn.ifplusor.infoweb.organization.persistence.TestOrganizationDao;
 
 @Controller
-@RequestMapping("/mvc")
 public class MvcController {
 	private static final Logger logger = LoggerFactory.getLogger(MvcController.class);
 	
@@ -31,6 +32,25 @@ public class MvcController {
 	
 	@Resource
 	private TestOrganizationDao testOrganizationDao;
+
+	@RequestMapping(path = "/index")
+	public ModelAndView index(@RequestParam(value="result", required=false) Integer result,
+							  @RequestParam(value="msg", required=false) String message){
+		logger.debug("In index.");
+
+		Map<String, Object> model = new HashMap<String, Object>();
+
+		if (result != null) {
+    		model.put("result", result);
+    	} else {
+    		model.put("result", 0);
+    	}
+    	if (message != null) {
+    		model.put("msg", message);
+    	}
+
+		return new ModelAndView("index", model);
+	}
 
     @RequestMapping("/hello")
     public ModelAndView hello(){
