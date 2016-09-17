@@ -252,25 +252,21 @@ public class VirtualFilesystemService {
 		Folder folder = (Folder) obj;
 		
 		authorityService.testWriteAuthority(folder);
-		
-		try {
-			String uri = FileUtil.saveMultipartFile(multiFile);
-			
-			File file = new File();
-			file.setParentFolder(folder);
-			file.setOwner(authorityService.getCurrentUser());
-			file.setName(multiFile.getOriginalFilename());
-			file.setAuthority("rw----");
-			file.setUri(uri);
-			
-			virtualFilesystemDao.saveFile(file);
-		} catch (IOException e) {
-			throw e;
-		}
-		
+
+		String uri = FileUtil.saveMultipartFile(multiFile);
+
+		File file = new File();
+		file.setParentFolder(folder);
+		file.setOwner(authorityService.getCurrentUser());
+		file.setName(multiFile.getOriginalFilename());
+		file.setAuthority("rw----");
+		file.setUri(uri);
+
+		virtualFilesystemDao.saveFile(file);
+
 		return 0;
 	}
-	
+
 	@Transactional
 	public int downloadFile(String agent, String path, HttpServletResponse response) {
 		
@@ -291,15 +287,8 @@ public class VirtualFilesystemService {
             String uri = file.getUri();
             
             //中文文件名支持
-            String encodedfileName = null;
-            if (null != agent && -1 != agent.indexOf("MSIE")) {//IE
-                encodedfileName = java.net.URLEncoder.encode(fileName, "UTF-8");
-            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {
-                encodedfileName = new String (fileName.getBytes("UTF-8"), "iso-8859-1");
-            } else {
-                encodedfileName = java.net.URLEncoder.encode(fileName, "UTF-8");
-            }
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedfileName + "\"");
+            String encodedFileName = FileUtil.encodeFileName(agent, fileName);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"");
             
             FileUtil.downloadByUri(uri, response.getOutputStream());
 		} catch (FileNotFoundException e) {
@@ -316,8 +305,6 @@ public class VirtualFilesystemService {
 			} catch (IOException e1) {
 				response.setStatus(500);
 			}
-        } catch (UnsupportedEncodingException e) {
-        	response.setStatus(500);
         } catch (IOException e) {
         	response.setStatus(500);
 		} 

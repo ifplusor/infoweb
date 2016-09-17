@@ -1,12 +1,6 @@
 package psn.ifplusor.infoweb.cms.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -125,10 +119,8 @@ public class FileUtil {
         write(file.getInputStream(), out);
         
         logger.debug("upload \"" + fullPath + "\" seccussed.");
-        
-        String uri = fullPath.replaceFirst(FILEDIR, URI_PREFIX_CMS);
-        
-        return uri;
+
+        return fullPath.replaceFirst(FILEDIR, URI_PREFIX_CMS);
     }
     
     /**
@@ -183,11 +175,11 @@ public class FileUtil {
     
     /**
      * 写入数据
-     * @param in
-     * @param out
-     * @throws IOException
+     * @param in input stream for reading file
+     * @param out out stream for writing file
+     * @throws IOException exception occur when writing
      */
-    public static void write(InputStream in, OutputStream out) throws IOException {
+    private static void write(InputStream in, OutputStream out) throws IOException {
         try {
             byte[] buffer = new byte[1024];
             int bytesRead = -1;
@@ -198,10 +190,33 @@ public class FileUtil {
         } finally {
             try {
                 in.close();
-            } catch (IOException ex) {}
+            } catch (IOException ex) {
+                logger.warn(ex.getMessage());
+            }
             try {
                 out.close();
-            } catch (IOException ex) {}
+            } catch (IOException ex) {
+                logger.warn(ex.getMessage());
+            }
         }
+    }
+
+    public static String encodeFileName(String agent, String fileName) {
+
+        String encodedFileName = null;
+
+        try {
+            if (null != agent && agent.contains("MSIE")) {//IE
+                encodedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+            } else if (null != agent && agent.contains("Mozilla")) {
+                encodedFileName = new String (fileName.getBytes("UTF-8"), "iso-8859-1");
+            } else {
+                encodedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+            }
+        } catch (UnsupportedEncodingException e) {
+            logger.warn(e.getMessage());
+        }
+
+        return encodedFileName;
     }
 }

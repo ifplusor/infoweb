@@ -72,16 +72,9 @@ public class FileController {
             String fileName = path.substring(path.lastIndexOf("/") + 1);
             
             //中文文件名支持
-            String encodedfileName = null;
             String agent = request.getHeader("USER-AGENT");
-            if (null != agent && -1 != agent.indexOf("MSIE")) {//IE
-                encodedfileName = java.net.URLEncoder.encode(fileName, "UTF-8");
-            } else if (null != agent && -1 != agent.indexOf("Mozilla")) {
-                encodedfileName = new String (fileName.getBytes("UTF-8"), "iso-8859-1");
-            } else {
-                encodedfileName = java.net.URLEncoder.encode(fileName, "UTF-8");
-            }
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedfileName + "\"");
+            String encodedFileName = FileUtil.encodeFileName(agent, fileName);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"");
             
             FileUtil.download(path, response.getOutputStream());
         } catch (IOException e) {
