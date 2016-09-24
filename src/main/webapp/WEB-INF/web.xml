@@ -92,7 +92,7 @@
     <display-name>infoweb</display-name>
 
     <welcome-file-list>
-        <welcome-file>/WEB-INF/jsp/login.jsp</welcome-file>
+        <welcome-file>/WEB-INF/jsp/index.jsp</welcome-file>
     </welcome-file-list>
     
     <error-page>

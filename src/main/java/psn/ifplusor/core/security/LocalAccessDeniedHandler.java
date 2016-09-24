@@ -26,21 +26,18 @@ public class LocalAccessDeniedHandler implements AccessDeniedHandler {
         if(!isAjax){
             request.setAttribute("isAjaxRequest", isAjax);
             request.setAttribute("message", ex.getMessage());
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/accessDenied.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/guest/accessDenied.jsp");
             dispatcher.forward(request, response);
         }else{
             response.setCharacterEncoding("UTF-8");
             response.setContentType("text/plain");
-            response.getWriter().write("权限不足");
+            response.getWriter().write("{\"code\":401, \"message\":\"Unauthorized\"}");
             response.getWriter().close();
         }
     }
  
     private boolean isAjaxRequest(HttpServletRequest request) {
         String header = request.getHeader("X-Requested-With");
-        if (header != null && "XMLHttpRequest".equals(header))
-            return true;
-        else
-            return false;
+        return header != null && "XMLHttpRequest".equals(header);
     }
 }

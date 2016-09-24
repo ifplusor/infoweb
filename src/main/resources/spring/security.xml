@@ -34,13 +34,13 @@
     <beans:bean id="digestEntryPoint" class="org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint">
         <beans:property name="realmName" value="ifplusor.win"/>
         <beans:property name="key" value="acegi" />
-        <beans:property name="nonceValiditySeconds" value="30" />
+        <beans:property name="nonceValiditySeconds" value="180" />
     </beans:bean>
 
 
     <!--
     <http auto-config="true" use-expressions="false">
-        <form-login login-page="/login.jsp" authentication-failure-url="/login.jsp?error=true" default-target-url="/" />
+        <form-login login-page="/jsp/login.jsp" authentication-failure-url="/jsp/login.jsp?error=true" default-target-url="/" />
         <anonymous username="Guest"/>
         <session-management session-fixation-protection="migrateSession">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>

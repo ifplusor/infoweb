@@ -80,13 +80,13 @@ insert into security_role(id,name,descn) values(2,'ROLE_SUPER','超级管理员'
 insert into security_role(id,name,descn) values(3,'ROLE_ADMIN','管理员');
 insert into security_role(id,name,descn) values(4,'ROLE_USER','用户');
 
-insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(1,'','URL','/login.jsp',0,'登陆');
-insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(2,'','URL','/super/**',1,'');
-insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(3,'','URL','/mvc/print/**',2,'');
-insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(4,'','URL','/**',3,'');
+insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(1,'','URL','/guest/**',0,'游客页面');
+insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(2,'','URL','/super/**',1,'超级管理员页面');
+insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(3,'','URL','/admin/**',2,'管理员页面');
+insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(4,'','URL','/**',999,'用户页面');
 
+-- 超级管理员需要单独授权
 insert into security_user_role(user_id,role_id) values(1,2);
-insert into security_user_role(user_id,role_id) values(2,4);
 
 insert into security_resc_role(resc_id,role_id) values(1,1);
 insert into security_resc_role(resc_id,role_id) values(2,2);
@@ -97,10 +97,11 @@ insert into security_resc_role(resc_id,role_id) values(4,4);
 insert into security_group(id,groupname,descn) values(1,'admin','管理员组');
 insert into security_group(id,groupname,descn) values(2,'user','用户组');
 
+-- 管理员，用户 通过组授权
+insert into security_group_role(group_id,role_id) values(1,3);
+insert into security_group_role(group_id,role_id) values(2,4);
+
 insert into security_group_user(group_id,user_id) values(1,2);
 insert into security_group_user(group_id,user_id) values(2,1);
 insert into security_group_user(group_id,user_id) values(2,3);
-
-insert into security_group_role(group_id,role_id) values(1,3);
-insert into security_group_role(group_id,role_id) values(2,4);
 

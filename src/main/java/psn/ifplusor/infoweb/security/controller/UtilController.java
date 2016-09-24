@@ -1,13 +1,9 @@
-/**
- * Created by james on 9/16/16.
- */
-
 package psn.ifplusor.infoweb.security.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import psn.ifplusor.core.security.CAPTCHAUtil;
 
 import javax.imageio.ImageIO;
@@ -23,7 +19,7 @@ public class UtilController {
 
     private static final Logger logger = LoggerFactory.getLogger(UtilController.class);
 
-    @RequestMapping("/CAPTCHA")
+    @RequestMapping(value = "/CAPTCHA", method = RequestMethod.GET)
     public void generateCAPTCHA(HttpServletRequest request, HttpServletResponse response){
         logger.debug("In security/util/CAPTCHA");
 
@@ -36,12 +32,33 @@ public class UtilController {
         String sRand = CAPTCHAUtil.generateCAPTCHACode();
         RenderedImage image = CAPTCHAUtil.generateCAPTCHAImage(sRand);
 
-        HttpSession session = request.getSession(true);
-        session.setAttribute("rand",sRand);
+        // 把产生的验证码存入到Session中
+        HttpSession session = request.getSession();
+        session.setAttribute("CAPTCHA", sRand);
+
         try {
-            ImageIO.write((RenderedImage) image, "JPEG", response.getOutputStream());
+            ImageIO.write(image, "JPEG", response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/checkCAPTCHA", method = RequestMethod.POST)
+    public String checkCAPTCHA(HttpServletRequest request, @RequestParam("code") String code) {
+
+        HttpSession session = request.getSession();
+        String CAPTCHA = (String) session.getAttribute("CAPTCHA");
+
+        if (CAPTCHA == null) {
+            return "{\"code\":2, \"message\":\"overtime\"}";
+        }
+
+        if (CAPTCHA.equals(code)) {
+            session.removeAttribute("CAPTCHA");
+            return "{\"code\":1, \"message\":\"succeed\"}";
+        } else {
+            return "{\"code\":-1, \"message\":\"error\"}";
         }
     }
 }
