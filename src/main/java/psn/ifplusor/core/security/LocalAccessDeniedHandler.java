@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import psn.ifplusor.core.common.CodeAndMessage;
 
 public class LocalAccessDeniedHandler implements AccessDeniedHandler {
 	
@@ -31,7 +32,7 @@ public class LocalAccessDeniedHandler implements AccessDeniedHandler {
         }else{
             response.setCharacterEncoding("UTF-8");
             response.setContentType("text/plain");
-            response.getWriter().write("{\"code\":401, \"message\":\"Unauthorized\"}");
+            response.getWriter().write(CodeAndMessage.JSONCodeAndMessage(400, "no authorized."));
             response.getWriter().close();
         }
     }

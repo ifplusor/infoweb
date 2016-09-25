@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import psn.ifplusor.core.common.CodeAndMessage;
 import psn.ifplusor.infoweb.cms.service.PermissionDeniedFileReadException;
 import psn.ifplusor.infoweb.cms.service.PermissionDeniedFileWriteException;
 import psn.ifplusor.infoweb.cms.service.VirtualFilesystemService;
@@ -31,37 +32,23 @@ public class CmsController {
 	private VirtualFilesystemService virtualFilesystemService;
 	
 	@RequestMapping("/ls")
-    public ModelAndView list(@RequestParam(value="pos", required=false) String pos,
-							 @RequestParam(value="result", required=false) Integer result,
-							 @RequestParam(value="msg", required=false) String message){
+    public ModelAndView list(@RequestParam(value="pos", required=false, defaultValue="/") String pos,
+							 @RequestParam(value="code", required=false, defaultValue="0") Integer code,
+							 @RequestParam(value="message", required=false, defaultValue="success") String message) {
     	logger.debug("In cms/list");
     	
-    	if (pos == null) {
-    		pos = "/";
-    	}
-    	
     	Map<String, Object> model = new HashMap<String, Object>();
-    	
-    	if (result != null) {
-    		model.put("result", result);
-    	} else {
-    		model.put("result", 0);
-    	}
-    	if (message != null) {
-    		model.put("msg", message);
-    	}
+		CodeAndMessage.setCodeAndMessage(model, code, message);
     	
         try {
         	model.put("list", virtualFilesystemService.listFolderAndFile(pos));
         	model.put("pos", pos);
 			return new ModelAndView("cms/ls", model);
 		} catch (PermissionDeniedFileReadException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 201);
+			CodeAndMessage.setCodeAndMessage(model, 201, e.getMessage());
 			return new ModelAndView("redirect:/index", model);
 		} catch (FileNotFoundException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 1);
+			CodeAndMessage.setCodeAndMessage(model, 101, e.getMessage());
 			return new ModelAndView("redirect:ls", model);
 		}
     }
@@ -73,15 +60,13 @@ public class CmsController {
 		try {
 			model.put("pos", pos);
 			if (virtualFilesystemService.testFolderOrFile(pos, true)) {
-				model.put("result", 0);
+				CodeAndMessage.setCodeAndMessage(model, 0, "success");
 				return new ModelAndView("cms/mkdir", model);
 			}
 
-			model.put("msg", "指定路径为文件，不能创建子目录！");
-			model.put("result", 2);
+			CodeAndMessage.setCodeAndMessage(model, 102, "指定路径为文件，不能创建子目录！");
 		} catch (FileNotFoundException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 1);
+			CodeAndMessage.setCodeAndMessage(model, 101, e.getMessage());
 		}
 		return new ModelAndView("redirect:ls", model);
 	}
@@ -96,23 +81,19 @@ public class CmsController {
 			model.put("pos", pos);
 			switch (result) {
 			case 0:
-				model.put("msg", "创建成功！");
-				model.put("result", 0);
+				CodeAndMessage.setCodeAndMessage(model, 0, "创建成功！");
 				break;
 			case 1:
-				model.put("msg", "指定路径为文件，不能创建子目录！");
-				model.put("result", 2);
+				CodeAndMessage.setCodeAndMessage(model, 102, "指定路径为文件，不能创建子目录！");
 				break;
 			case 2:
-				model.put("msg", "已存在同名目录或文件，不能创建子目录！");
-				model.put("result", 3);
+				CodeAndMessage.setCodeAndMessage(model, 103, "已存在同名目录或文件，不能创建子目录！");
+				break;
 			}
 		} catch (PermissionDeniedFileWriteException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 202);
+			CodeAndMessage.setCodeAndMessage(model, 202, e.getMessage());
 		} catch (FileNotFoundException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 1);
+			CodeAndMessage.setCodeAndMessage(model, 101, e.getMessage());
 		}
 		
 		return new ModelAndView("redirect:../ls", model);
@@ -128,21 +109,18 @@ public class CmsController {
 			
 			switch (result) {
 			case 0:
+				CodeAndMessage.setCodeAndMessage(model, 0, "删除成功！");
 				model.put("pos", parentPath);
-				model.put("msg", "删除成功！");
-				model.put("result", 0);
 				break;
 			case 1:
+				CodeAndMessage.setCodeAndMessage(model, 104, "目录不为空，不能进行级联删除！");
 				model.put("pos", pos);
-				model.put("msg", "目录不为空，不能进行级联删除！");
-				model.put("result", 4);
+				break;
 			}
 		} catch (PermissionDeniedFileWriteException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 202);
+			CodeAndMessage.setCodeAndMessage(model, 202, e.getMessage());
 		} catch (FileNotFoundException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 1);
+			CodeAndMessage.setCodeAndMessage(model, 101, e.getMessage());
 		}
 		
 		return new ModelAndView("redirect:../ls", model);
@@ -156,15 +134,13 @@ public class CmsController {
 		try {
 			model.put("pos", pos);
 			if (virtualFilesystemService.testFolderOrFile(pos, true)) {
-				model.put("result", 0);
+				CodeAndMessage.setCodeAndMessage(model, 0, "success");
 				return new ModelAndView("cms/upload", model);
 			}
-			
-			model.put("msg", "指定路径为文件，不能上传文件！");
-			model.put("result", 2);
+
+			CodeAndMessage.setCodeAndMessage(model, 102, "指定路径为文件，不能上传文件！");
 		} catch (FileNotFoundException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 1);
+			CodeAndMessage.setCodeAndMessage(model, 101, e.getMessage());
 		}
 		return new ModelAndView("redirect:ls", model);
 	}
@@ -178,16 +154,13 @@ public class CmsController {
 
 		try {
 			virtualFilesystemService.uploadFile(pos, uploadFile);
-            
+
+			CodeAndMessage.setCodeAndMessage(model, 0, "上传成功");
 			model.put("pos", pos);
-            model.put("msg", "上传成功");
-            model.put("result", 0);
 		} catch (PermissionDeniedFileWriteException e) {
-			model.put("msg", e.getMessage());
-			model.put("result", 202);
+			CodeAndMessage.setCodeAndMessage(model, 202, e.getMessage());
         } catch (IOException e) {
-            model.put("msg", "上传失败");
-            model.put("result", 5);
+			CodeAndMessage.setCodeAndMessage(model, 5, "上传失败");
 		}
         return new ModelAndView("redirect:../ls", model);
     }

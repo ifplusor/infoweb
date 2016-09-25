@@ -3,6 +3,7 @@ package psn.ifplusor.infoweb.security.persistence;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -30,7 +31,11 @@ public class UserDao {
 		String jpql = "from User u where u.username=?";
 		Query query = entityManager.createQuery(jpql);
 		query.setParameter(1, username);
-		
-		return (User) query.getSingleResult();
+
+		try {
+			return (User) query.getSingleResult();
+		} catch (NoResultException nre) {
+			return null;
+		}
 	}
 }

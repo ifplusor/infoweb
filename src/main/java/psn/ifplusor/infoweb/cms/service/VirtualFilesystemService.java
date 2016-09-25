@@ -21,6 +21,8 @@ import psn.ifplusor.infoweb.cms.persistence.Folder;
 import psn.ifplusor.infoweb.cms.persistence.VirtualFilesystemDao;
 import psn.ifplusor.infoweb.cms.util.FileUtil;
 
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+
 @Service
 public class VirtualFilesystemService {
 	
@@ -294,19 +296,19 @@ public class VirtualFilesystemService {
 		} catch (FileNotFoundException e) {
 			try {
 				String msg = java.net.URLEncoder.encode(e.getMessage(),"utf-8"); 
-				response.sendRedirect("../ls?result=1&msg=" + msg);
+				response.sendRedirect("../ls?code=101&message=" + msg);
 			} catch (IOException e1) {
-				response.setStatus(500);
+				response.setStatus(SC_INTERNAL_SERVER_ERROR);
 			}
 		} catch (PermissionDeniedFileReadException e) {
 			try {
 				String msg = java.net.URLEncoder.encode(e.getMessage(),"utf-8"); 
-				response.sendRedirect("../ls?result=201&msg=" + msg);
+				response.sendRedirect("../ls?code=201&message=" + msg);
 			} catch (IOException e1) {
-				response.setStatus(500);
+				response.setStatus(SC_INTERNAL_SERVER_ERROR);
 			}
         } catch (IOException e) {
-        	response.setStatus(500);
+        	response.setStatus(SC_INTERNAL_SERVER_ERROR);
 		} 
 		
 		return 0;

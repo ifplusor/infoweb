@@ -4,8 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import psn.ifplusor.core.common.CodeAndMessage;
 import psn.ifplusor.core.security.CAPTCHAUtil;
+import psn.ifplusor.infoweb.security.Service.UserService;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +21,9 @@ import java.io.IOException;
 public class UtilController {
 
     private static final Logger logger = LoggerFactory.getLogger(UtilController.class);
+
+    @Resource
+    UserService userService;
 
     @RequestMapping(value = "/CAPTCHA", method = RequestMethod.GET)
     public void generateCAPTCHA(HttpServletRequest request, HttpServletResponse response){
@@ -51,14 +57,20 @@ public class UtilController {
         String CAPTCHA = (String) session.getAttribute("CAPTCHA");
 
         if (CAPTCHA == null) {
-            return "{\"code\":2, \"message\":\"overtime\"}";
+            return CodeAndMessage.JSONCodeAndMessage(2, "overtime");
         }
 
         if (CAPTCHA.equals(code)) {
             session.removeAttribute("CAPTCHA");
-            return "{\"code\":1, \"message\":\"succeed\"}";
+            return CodeAndMessage.JSONCodeAndMessage(0, "success");
         } else {
-            return "{\"code\":-1, \"message\":\"error\"}";
+            return CodeAndMessage.JSONCodeAndMessage(1, "error");
         }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/checkUsername", method = RequestMethod.POST)
+    public String checkUsername(@RequestParam("username") String username) {
+        return CodeAndMessage.JSONCodeAndMessageAndResult(0, "success", userService.getUserByName(username)==null);
     }
 }

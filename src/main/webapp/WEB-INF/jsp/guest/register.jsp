@@ -19,7 +19,33 @@
             imgNode.src = "/security/util/CAPTCHA?sid=" + Math.random();  // 防止浏览器缓存的问题
         }
 
-        function check(code) {
+        function checkUsername(username) {
+            var csrf=document.getElementById("csrf");
+            var data=csrf.name+"="+csrf.value+"&username="+username;
+
+            var xmlhttp;
+
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
+            xmlhttp.open("POST", "/security/util/checkUsername?sid=" + Math.random(), true);
+            xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    var obj = JSON.parse(xmlhttp.responseText);
+                    document.getElementById("MsgUsername").innerHTML = obj.result?"用户名可用":"用户已存在";
+                }
+            };
+            xmlhttp.send(data);
+        }
+
+        function checkCAPTCHA(code) {
             var csrf=document.getElementById("csrf");
             var data=csrf.name+"="+csrf.value+"&code="+code;
 
@@ -39,7 +65,7 @@
             xmlhttp.onreadystatechange = function () {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     var obj = JSON.parse(xmlhttp.responseText);
-                    document.getElementById("msg").innerHTML = obj.message;
+                    document.getElementById("MsgCAPTCHA").innerHTML = obj.message;
                 }
             };
             xmlhttp.send(data);
@@ -48,10 +74,13 @@
 </head>
 <body>
     <form action="<c:url value="/security/util/checkCAPTCHA"/>" method="post">
-        <label>输入验证码</label>
-        <input type="text" name="code" title="CAPTCHA" onchange="check(this.value)"/>
+        <label>用户名</label>
+        <input type="text" name="code" title="username" onchange="checkUsername(this.value)"/>
+        <div id="MsgUsername" style="color:red"></div><br/>
+        <label>验证码</label>
+        <input type="text" name="code" title="CAPTCHA" onchange="checkCAPTCHA(this.value)"/>
         <img id="CAPTCHA"  title="点击更换" onclick="changeCode();" src="<c:url value="/security/util/CAPTCHA"/>"><br/>
-        <div id="msg" style="color:red"></div><br/>
+        <div id="MsgCAPTCHA" style="color:red"></div><br/>
         <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="submit" value="submit">
     </form>

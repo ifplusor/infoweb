@@ -23,8 +23,8 @@
     </style>  
   </head>  
   <body>
-    <c:if test="${msg != null}">
-        message: ${msg} <br/><br/>
+    <c:if test="${code != 0 && message != null}">
+        message: ${message} <br/><br/>
     </c:if>
   
     当前位置: <a href="<%=basePath%>cms/ls?pos=${pos}">${pos}</a>

@@ -1,10 +1,17 @@
 code    reason
 -------------------------------------------------------------------------
 0       success
-1       file not found
-2       make file/directory failed: the path point to a file
-3       make file/directory failed: file with same name exists
-4       delete directory failed: directory is not empty
+1       error
+2       over time
 5       io exception
+
+# 1XX file system
+101     file not found
+102     make file/directory failed: the path point to a file
+103     make file/directory failed: file with same name exists
+104     delete directory failed: directory is not empty
+
+# 2XX authorized system
+200     no authorized
 201     permission denied: file read
 202     permission denied: file write
