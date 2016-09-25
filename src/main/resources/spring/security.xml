@@ -15,7 +15,8 @@
     <http pattern="/**/*.png" security="none" />
     <http pattern="/**/*.ico" security="none" />
 
-    <http use-expressions="false" entry-point-ref="digestEntryPoint">
+    <http use-expressions="false" entry-point-ref="alternativeEntryPoint">
+        <form-login login-page="/guest/login" authentication-failure-url="/guest/login?error=true" default-target-url="/" />
         <anonymous username="Guest"/>
         <session-management session-fixation-protection="migrateSession">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>
@@ -37,18 +38,15 @@
         <beans:property name="nonceValiditySeconds" value="180" />
     </beans:bean>
 
+    <beans:bean id="formEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg value="/guest/login"/>
+    </beans:bean>
 
-    <!--
-    <http auto-config="true" use-expressions="false">
-        <form-login login-page="/jsp/login.jsp" authentication-failure-url="/jsp/login.jsp?error=true" default-target-url="/" />
-        <anonymous username="Guest"/>
-        <session-management session-fixation-protection="migrateSession">
-            <concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>
-        </session-management>
-        <access-denied-handler ref="accessDeniedHandler"/>
-        <custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
-        <custom-filter ref="switchUserProcessingFilter" position="SWITCH_USER_FILTER" />
-    </http> --> <!-- 替换原有权限认证功能 -->
+    <beans:bean id="alternativeEntryPoint" class="psn.ifplusor.core.security.AlternativeAuthenticationEntryPoint">
+        <beans:property name="formEntryPoint" ref="formEntryPoint"/>
+        <beans:property name="digestEntryPoint" ref="digestEntryPoint"/>
+        <beans:property name="useHeader" value="false"/>
+    </beans:bean>
 
 
     <!-- 权限拒绝处理器 -->

@@ -53,6 +53,8 @@ public class UtilController {
     @RequestMapping(value = "/checkCAPTCHA", method = RequestMethod.POST)
     public String checkCAPTCHA(HttpServletRequest request, @RequestParam("code") String code) {
 
+        code = code.toUpperCase(); // 忽略大小写
+
         HttpSession session = request.getSession();
         String CAPTCHA = (String) session.getAttribute("CAPTCHA");
 
