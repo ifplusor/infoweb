@@ -1,15 +1,9 @@
 package psn.ifplusor.infoweb.security.persistence;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "security_user")
@@ -24,8 +18,8 @@ public class User implements java.io.Serializable {
 	private String phone;
 	private int status;
 	private String description;
-	private Set<Role> roles;
-	private Set<Group> groups;
+	private Set<Role> roles = new HashSet<>();
+	private Set<Group> groups = new HashSet<>();
 	
 	@Id
 	@Column(name = "id")
@@ -77,7 +71,7 @@ public class User implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "security_user_role",
 			joinColumns={@JoinColumn(name = "user_id", referencedColumnName = "id")},
 			inverseJoinColumns={@JoinColumn(name = "role_id", referencedColumnName = "id")})
@@ -89,10 +83,7 @@ public class User implements java.io.Serializable {
 		this.roles = roles;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "security_group_user",
-			joinColumns={@JoinColumn(name = "user_id", referencedColumnName = "id")},
-			inverseJoinColumns={@JoinColumn(name = "group_id", referencedColumnName = "id")})
+	@ManyToMany(mappedBy = "users")
 	public Set<Group> getGroups() {
 		return groups;
 	}

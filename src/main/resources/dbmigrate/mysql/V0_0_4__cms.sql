@@ -1,5 +1,5 @@
 create table cms_folder (
-    id bigint auto_increment,
+    id bigint,
     owner_id bigint not null,
     parent_folder_id bigint,
     name varchar(50) not null,
@@ -11,7 +11,7 @@ create table cms_folder (
 ) engine=InnoDB default charset=utf8;
 
 create table cms_file (
-    id bigint auto_increment,
+    id bigint,
     owner_id bigint not null,
     parent_folder_id bigint not null,
     name varchar(50) not null,

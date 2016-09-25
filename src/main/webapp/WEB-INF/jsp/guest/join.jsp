@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ page import="java.util.*" contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -45,6 +46,11 @@
             xmlhttp.send(data);
         }
 
+        function checkConfirm(confirm) {
+            var password=document.getElementsByName("password")[0].value;
+            document.getElementById("MsgConfirm").innerHTML = (confirm==password)?"正确":"两次输入不一致";
+        }
+
         function checkCAPTCHA(code) {
             var csrf=document.getElementById("csrf");
             var data=csrf.name+"="+csrf.value+"&code="+code;
@@ -73,14 +79,51 @@
     </script>
 </head>
 <body>
-    <form action="<c:url value="/security/util/checkCAPTCHA"/>" method="post">
-        <label>用户名</label>
-        <input type="text" name="code" title="username" onchange="checkUsername(this.value)"/>
-        <div id="MsgUsername" style="color:red"></div><br/>
-        <label>验证码</label>
-        <input type="text" name="code" title="CAPTCHA" onchange="checkCAPTCHA(this.value)"/>
-        <img id="CAPTCHA"  title="点击更换" onclick="changeCode();" src="<c:url value="/security/util/CAPTCHA"/>"><br/>
-        <div id="MsgCAPTCHA" style="color:red"></div><br/>
+    <form action="<c:url value="/guest/op/register"/>" method="post">
+        <table>
+            <tr>
+                <td>
+                    <label>用户名</label>
+                </td>
+                <td>
+                    <input name="username" type="text" title="username" onchange="checkUsername(this.value)"/>
+                </td>
+                <td>
+                    <div id="MsgUsername" style="color:red"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>密 码</label>
+                </td>
+                <td>
+                    <input name="password" type="password" title="password"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>确认密码</label>
+                </td>
+                <td>
+                    <input name="confirm" type="password" title="confirm" onchange="checkConfirm(this.value)"/>
+                </td>
+                <td>
+                    <div id="MsgConfirm" style="color:red"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>验证码</label>
+                </td>
+                <td>
+                    <input name="code" type="text" title="CAPTCHA" onchange="checkCAPTCHA(this.value)"/>
+                    <img id="CAPTCHA" title="点击更换" onclick="changeCode();" src="<c:url value="/security/util/CAPTCHA"/>">
+                </td>
+                <td>
+                    <div id="MsgCAPTCHA" style="color:red"></div>
+                </td>
+            </tr>
+        </table>
         <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="submit" value="submit">
     </form>

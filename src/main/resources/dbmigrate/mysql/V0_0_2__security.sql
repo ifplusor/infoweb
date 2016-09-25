@@ -1,6 +1,6 @@
 -- 资源
 create table security_resc (
-    id bigint auto_increment,
+    id bigint,
     name varchar(50) not null,
     resc_type varchar(50),
     resc_string varchar(200),
@@ -11,7 +11,7 @@ create table security_resc (
 
 -- 角色
 create table security_role (
-    id bigint auto_increment,
+    id bigint,
     name varchar(50) not null,
     descn varchar(200),
     constraint pk_role primary key(id)
@@ -19,7 +19,7 @@ create table security_role (
 
 -- 用户
 create table security_user (
-    id bigint auto_increment,
+    id bigint,
     username varchar(50) unique not null,
     password varchar(50) not null,
     status integer not null,
@@ -28,12 +28,12 @@ create table security_user (
 ) engine=InnoDB default charset=utf8;
 
 -- 资源角色连接表
-create table security_resc_role (
-    resc_id bigint,
+create table security_role_resc (
     role_id bigint,
-    constraint pk_resc_role primary key(resc_id, role_id),
-    constraint fk_resc_role_resc foreign key(resc_id) references security_resc(id),
-    constraint fk_resc_role_role foreign key(role_id) references security_role(id)
+    resc_id bigint,
+    constraint pk_role_resc primary key(role_id, resc_id),
+    constraint fk_role_resc_role foreign key(role_id) references security_role(id),
+    constraint fk_role_resc_resc foreign key(resc_id) references security_resc(id)
 ) engine=InnoDB default charset=utf8;
 
 -- 用户角色连接表
@@ -47,7 +47,7 @@ create table security_user_role (
 
 -- 组
 create table security_group (
-    id bigint auto_increment,
+    id bigint,
     groupname varchar(50) unique not null,
     descn varchar(200),
     constraint pk_group primary key(id)
@@ -88,11 +88,11 @@ insert into security_resc(id,name,resc_type,resc_string,priority,descn) values(4
 -- 超级管理员需要单独授权
 insert into security_user_role(user_id,role_id) values(1,2);
 
-insert into security_resc_role(resc_id,role_id) values(1,1);
-insert into security_resc_role(resc_id,role_id) values(2,2);
-insert into security_resc_role(resc_id,role_id) values(3,3);
-insert into security_resc_role(resc_id,role_id) values(4,3);
-insert into security_resc_role(resc_id,role_id) values(4,4);
+insert into security_role_resc(role_id,resc_id) values(1,1);
+insert into security_role_resc(role_id,resc_id) values(2,2);
+insert into security_role_resc(role_id,resc_id) values(3,3);
+insert into security_role_resc(role_id,resc_id) values(3,4);
+insert into security_role_resc(role_id,resc_id) values(4,4);
 
 insert into security_group(id,groupname,descn) values(1,'admin','管理员组');
 insert into security_group(id,groupname,descn) values(2,'user','用户组');

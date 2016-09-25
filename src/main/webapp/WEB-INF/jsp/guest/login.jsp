@@ -24,7 +24,8 @@
         <input type="password" id="password" name="password"/>
     </p>
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-    <button type="submit" class="btn">Log in</button>
+    <button type="submit" class="btn">Sign in</button>
+    <a href="/guest/join">sign up</a>
 </form>
 
 </body>

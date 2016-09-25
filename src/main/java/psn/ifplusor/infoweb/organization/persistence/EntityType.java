@@ -74,10 +74,7 @@ public class EntityType implements java.io.Serializable {
 		this.structType = structType;
 	}
 	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "organization_struct_rule",
-			joinColumns={@JoinColumn(name = "child_entity_type_id", referencedColumnName = "id")},
-			inverseJoinColumns={@JoinColumn(name = "parent_entity_type_id", referencedColumnName = "id")})
+	@ManyToMany(mappedBy = "childEntityTypes")
 	public Set<EntityType> getParentEntitiyTypes() {
 		return parentEntitiyTypes;
 	}
@@ -86,7 +83,7 @@ public class EntityType implements java.io.Serializable {
 		this.parentEntitiyTypes = parentEntitiyTypes;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "organization_struct_rule",
 			joinColumns={@JoinColumn(name = "parent_entity_type_id", referencedColumnName = "id")},
 			inverseJoinColumns={@JoinColumn(name = "child_entity_type_id", referencedColumnName = "id")})

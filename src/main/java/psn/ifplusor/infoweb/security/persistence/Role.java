@@ -1,15 +1,9 @@
 package psn.ifplusor.infoweb.security.persistence;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "security_role")
@@ -20,9 +14,9 @@ public class Role implements java.io.Serializable {
 	private long id;
 	private String name;
 	private String description;
-	private Set<Resource> resources;
-	private Set<User> users;
-	private Set<Group> groups;
+	private Set<Resource> resources = new HashSet<>();
+	private Set<User> users = new HashSet<>();
+	private Set<Group> groups = new HashSet<>();
 	
 	@Id
 	@Column(name = "id")
@@ -53,7 +47,7 @@ public class Role implements java.io.Serializable {
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "security_resc_role",
+	@JoinTable(name = "security_role_resc",
 			joinColumns={@JoinColumn(name = "role_id", referencedColumnName = "id")},
 			inverseJoinColumns={@JoinColumn(name = "resc_id", referencedColumnName = "id")})
 	public Set<Resource> getResources() {
@@ -64,10 +58,7 @@ public class Role implements java.io.Serializable {
 		this.resources = resources;
 	}
 	
-	@ManyToMany
-	@JoinTable(name = "security_user_role",
-			joinColumns={@JoinColumn(name = "role_id", referencedColumnName = "id")},
-			inverseJoinColumns={@JoinColumn(name = "user_id", referencedColumnName = "id")})
+	@ManyToMany(mappedBy = "roles")
 	public Set<User> getUsers() {
 		return users;
 	}
@@ -76,10 +67,7 @@ public class Role implements java.io.Serializable {
 		this.users = users;
 	}
 	
-	@ManyToMany
-	@JoinTable(name = "security_group_role",
-			joinColumns={@JoinColumn(name = "role_id", referencedColumnName = "id")},
-			inverseJoinColumns={@JoinColumn(name = "group_id", referencedColumnName = "id")})
+	@ManyToMany(mappedBy = "roles")
 	public Set<Group> getGroups() {
 		return groups;
 	}

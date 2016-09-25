@@ -62,7 +62,7 @@
     <beans:bean id="filterInvocationSecurityMetadataSource" class="psn.ifplusor.core.security.JdbcFilterInvocationDefinitionSourceFactoryBean">
         <beans:property name="dataSource" ref="dataSource"/>
         <beans:property name="resourceQuery" value="select re.resc_string,r.name from security_role r
-                                                    join security_resc_role rr on r.id=rr.role_id
+                                                    join security_role_resc rr on r.id=rr.role_id
                                                     join security_resc re on re.id=rr.resc_id
                                                     where re.resc_type='URL'
                                                     order by re.priority"/>

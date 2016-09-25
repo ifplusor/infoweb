@@ -126,7 +126,7 @@ public class CmsController {
 		return new ModelAndView("redirect:../ls", model);
 	}
 	
-	@RequestMapping("upload")
+	@RequestMapping("/upload")
 	public ModelAndView uploadPage(@RequestParam(value="pos") String pos) {
 		
 		Map<String, Object> model = new HashMap<String, Object>();

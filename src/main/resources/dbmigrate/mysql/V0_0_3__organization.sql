@@ -1,6 +1,6 @@
 -- 组织机构结构类型
 create table organization_struct_type (
-    id bigint auto_increment,
+    id bigint,
     name varchar(50) unique not null,
     descn varchar(200),
     constraint pk_st primary key(id)
@@ -8,7 +8,7 @@ create table organization_struct_type (
 
 -- 组织机构实体类型
 create table organization_entity_type (
-    id bigint auto_increment,
+    id bigint,
     struct_type_id bigint not null,
     name varchar(50) not null,
     code int,
@@ -32,7 +32,7 @@ create table organization_struct_rule (
 
 -- 组织机构实例
 create table organization_instance (
-    id bigint auto_increment,
+    id bigint,
     struct_type_id bigint not null,
     name varchar(50) unique not null,
     descn varchar(200),
@@ -42,7 +42,7 @@ create table organization_instance (
 
 -- 组织机构实例实体（连接表）
 create table organization_instance_entity (
-    id bigint auto_increment,
+    id bigint,
     instance_id bigint not null,
     entity_type_id bigint not null,
     name varchar(50) not null,

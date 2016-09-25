@@ -1,15 +1,9 @@
 package psn.ifplusor.infoweb.security.persistence;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "security_group")
@@ -20,8 +14,8 @@ public class Group implements java.io.Serializable {
 	private long id;
 	private String groupname;
 	private String description;
-	private Set<User> users;
-	private Set<Role> roles;
+	private Set<User> users = new HashSet<>();
+	private Set<Role> roles = new HashSet<>();
 	
 	@Id
 	@Column(name = "id")

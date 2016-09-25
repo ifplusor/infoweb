@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import psn.ifplusor.core.common.IdGenerator;
 import psn.ifplusor.infoweb.cms.persistence.File;
 import psn.ifplusor.infoweb.cms.persistence.Folder;
 import psn.ifplusor.infoweb.cms.persistence.VirtualFilesystemDao;
@@ -226,6 +227,7 @@ public class VirtualFilesystemService {
 			return 2;
 		
 		Folder childFolder = new Folder();
+		childFolder.setId(IdGenerator.get().nextId());
 		childFolder.setParentFolder(folder);
 		childFolder.setOwner(authorityService.getCurrentUser());
 		childFolder.setName(name);
@@ -258,6 +260,7 @@ public class VirtualFilesystemService {
 		String uri = FileUtil.saveMultipartFile(multiFile);
 
 		File file = new File();
+		file.setId(IdGenerator.get().nextId());
 		file.setParentFolder(folder);
 		file.setOwner(authorityService.getCurrentUser());
 		file.setName(multiFile.getOriginalFilename());

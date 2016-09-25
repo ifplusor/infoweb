@@ -12,7 +12,7 @@ import psn.ifplusor.infoweb.security.persistence.UserDao;
 @Service
 public class UserService {
 
-	@Resource
+	@Resource(name = "UserDao")
 	private UserDao userDao;
 	
 	public User getUserByName(String username) {
@@ -28,5 +28,15 @@ public class UserService {
 	private UserDetails getCurrentUserDetails() {
 
 		return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
+
+	public boolean existUser(String username) {
+
+		return getUserByName(username) != null;
+	}
+
+	public boolean registerUser(String username, String password) {
+
+		return userDao.addUser(username, password);
 	}
 }

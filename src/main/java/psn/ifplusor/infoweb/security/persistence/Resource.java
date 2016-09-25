@@ -1,15 +1,9 @@
 package psn.ifplusor.infoweb.security.persistence;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "security_resc")
@@ -23,7 +17,7 @@ public class Resource implements java.io.Serializable {
 	private String string;
 	private int priority;
 	private String description;
-	private Set<Role> roles;
+	private Set<Role> roles = new HashSet<>();
 	
 	@Id
 	@Column(name = "id")
@@ -80,10 +74,7 @@ public class Resource implements java.io.Serializable {
 		this.description = description;
 	}
 	
-	@ManyToMany
-	@JoinTable(name = "security_resc_role",
-			joinColumns={@JoinColumn(name = "resc_id", referencedColumnName = "id")},
-			inverseJoinColumns={@JoinColumn(name = "role_id", referencedColumnName = "id")})
+	@ManyToMany(mappedBy = "resources")
 	public Set<Role> getRoles() {
 		return roles;
 	}
