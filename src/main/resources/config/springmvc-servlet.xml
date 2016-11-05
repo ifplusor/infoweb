@@ -13,8 +13,9 @@
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <mvc:resources mapping="/static/**" location="/WEB-INF/static/" />  
-    
+    <mvc:resources mapping="/static/**" location="/WEB-INF/static/" />
+	<mvc:resources mapping="/editor-app/**" location="/editor-app/" />
+
     <!-- don't handle the static resource -->
     <mvc:default-servlet-handler />
  
@@ -27,7 +28,7 @@
                 html=text/html  
                 json=application/json  
                 xml=application/xml
-            </value>  
+            </value>
         </property>  
         <property name="defaultContentType" value="text/html"/>  
     </bean>  
