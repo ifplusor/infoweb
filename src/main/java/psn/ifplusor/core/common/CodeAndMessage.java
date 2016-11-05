@@ -10,7 +10,7 @@ public class CodeAndMessage {
 
     public static String JSONCodeAndMessageAndResult(int code, String message, Object result) {
         return "{\"code\":" + code + ", \"message\":\"" + message + "\", \"result\":"
-                + JSONUtil.generateJSONFromObject(result) + "}";
+                + JsonUtil.generateJsonFromObject(result) + "}";
     }
 
     public static void setCodeAndMessage(Map<String, Object> model, int code, String message) {
