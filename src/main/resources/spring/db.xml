@@ -82,9 +82,9 @@
         </tx:attributes>
     </tx:advice>
     
-    <aop:config proxy-target-class="true">
+    <aop:conf proxy-target-class="true">
         <aop:pointcut id="txPointcut" expression="execution(* psn.ifplusor.infoweb.persistence.manager.*.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
-    </aop:config> -->
+    </aop:conf> -->
 
 </beans>

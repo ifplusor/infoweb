@@ -23,9 +23,9 @@
         <servlet.version>3.1.0</servlet.version>
         <jsp.version>2.2</jsp.version>
         <jstl.version>1.2</jstl.version>
-        <spring.version>4.2.5.RELEASE</spring.version>
+        <spring.version>4.3.3.RELEASE</spring.version>
         <spring-dao.version>2.0.8</spring-dao.version>
-        <spring-security.version>4.1.0.RELEASE</spring-security.version>
+        <spring-security.version>4.1.3.RELEASE</spring-security.version>
         <xstream.version>1.4.9</xstream.version>
         <slf4j.version>1.7.21</slf4j.version>
         <logback.version>1.1.7</logback.version>
@@ -39,6 +39,7 @@
         <activiti.version>5.21.0</activiti.version>
         <jackson.version>2.8.4</jackson.version>
         <uuid.version>3.1.4</uuid.version>
+        <websocket.version>1.6</websocket.version>
     </properties>
 
     <dependencies>
@@ -128,6 +129,11 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-taglibs</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-cas</artifactId>
             <version>${spring-security.version}</version>
         </dependency>
 
@@ -261,10 +267,17 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
-                    <scanIntervalSeconds>3</scanIntervalSeconds>
+                    <jettyXml>${jetty.xml}</jettyXml>
+                    <stopKey>STOP</stopKey>
+                    <stopPort>9999</stopPort>
+                    <stopWait>5</stopWait>
+                    <scanIntervalSeconds>5</scanIntervalSeconds>
                     <webApp>
                         <contextPath>/</contextPath>
                     </webApp>
+
+                    <systemProperties>
+                    </systemProperties>
                 </configuration>
             </plugin>
 
@@ -277,7 +290,28 @@
                     <target>${jdk.version}</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+
+            <properties>
+                <jetty.xml>${project.basedir}/conf/jetty/jetty.xml,${project.basedir}/conf/jetty/jetty-http.xml,
+                    ${project.basedir}/conf/jetty/jetty-ssl.xml,${project.basedir}/conf/jetty/jetty-https.xml</jetty.xml>
+            </properties>
+
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
 
 </project>

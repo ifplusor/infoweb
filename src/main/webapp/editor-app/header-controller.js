@@ -21,7 +21,7 @@
 angular.module('activitiModeler')
     .controller('HeaderController', ['$rootScope', '$scope', '$http', '$timeout', function ($rootScope, $scope, $http, $timeout) {
     	
-    	// Add reference to global header-config
+    	// Add reference to global header-conf
     	$scope.headerConfig = KISBPM.HEADER_CONFIG;
     	
     	// TODO: generate setting-menu items

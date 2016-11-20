@@ -29,8 +29,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </c:if>
 
     <h2>Hello World!</h2>
+    <b>hello ${user.username}, welcome to infoweb!</b><br/>
     <br/><a href="<%=basePath%>cms/ls">虚拟文件系统</a>
     <br/><a href="<%=basePath%>cms/file/list">文件列表</a>
     <br/><a href="<%=basePath%>cms/file/upload">上传文件</a>
+    <br/><a href="<%=basePath%>bpm/list">bpm</a>
+    <br/><a href="<%=basePath%>red5/index.html">red5</a>
   </body>
 </html>

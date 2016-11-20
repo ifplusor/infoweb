@@ -22,6 +22,7 @@ import psn.ifplusor.infoweb.demo.persistence.TestData;
 import psn.ifplusor.infoweb.demo.persistence.TestDataDao;
 import psn.ifplusor.infoweb.organization.persistence.StructType;
 import psn.ifplusor.infoweb.organization.persistence.TestOrganizationDao;
+import psn.ifplusor.infoweb.security.Service.UserService;
 
 @Controller
 public class MvcController {
@@ -33,7 +34,10 @@ public class MvcController {
 	@Resource
 	private TestOrganizationDao testOrganizationDao;
 
-	@RequestMapping(path = "/index")
+	@Resource
+	private UserService userService;
+
+	@RequestMapping(path = {"/", "/index"})
 	public ModelAndView index(@RequestParam(value="result", required=false) Integer result,
 							  @RequestParam(value="msg", required=false) String message){
 		logger.debug("In index.");
@@ -48,6 +52,7 @@ public class MvcController {
     	if (message != null) {
     		model.put("msg", message);
     	}
+    	model.put("user", userService.getCurrentUser());
 
 		return new ModelAndView("index", model);
 	}

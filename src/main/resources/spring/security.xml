@@ -17,15 +17,30 @@
 
     <http use-expressions="false" entry-point-ref="alternativeEntryPoint">
         <form-login login-page="/guest/login" authentication-failure-url="/guest/login?error=true" default-target-url="/" />
+        <logout logout-success-url="/cas-logout.jsp"/>
         <anonymous username="Guest"/>
         <session-management session-fixation-protection="migrateSession">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>
         </session-management>
         <access-denied-handler ref="accessDeniedHandler"/>
+        <custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
+        <custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
+        <custom-filter ref="casFilter" position="CAS_FILTER" />
         <custom-filter ref="digestFilter" position="DIGEST_AUTH_FILTER" />
         <custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
         <custom-filter ref="switchUserProcessingFilter" position="SWITCH_USER_FILTER" />
     </http>
+
+
+    <beans:bean id="casFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="filterProcessesUrl" value="/j_spring_cas_security_check"/>
+    </beans:bean>
+
+    <beans:bean id="casEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+        <beans:property name="loginUrl" value="https://${cas.ip}:${cas.port}/cas/login"/>
+        <beans:property name="serviceProperties" ref="serviceProperties"/>
+    </beans:bean>
 
     <beans:bean id="digestFilter" class="org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
         <beans:property name="authenticationEntryPoint" ref="digestEntryPoint" />
@@ -43,11 +58,24 @@
     </beans:bean>
 
     <beans:bean id="alternativeEntryPoint" class="psn.ifplusor.core.security.AlternativeAuthenticationEntryPoint">
+        <beans:property name="casEntryPoint" ref="casEntryPoint"/>
         <beans:property name="formEntryPoint" ref="formEntryPoint"/>
         <beans:property name="digestEntryPoint" ref="digestEntryPoint"/>
         <beans:property name="useHeader" value="false"/>
     </beans:bean>
 
+
+    <!-- This filter handles a Single Logout Request from the CAS Server -->
+    <beans:bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
+
+    <!-- This filter redirects to the CAS Server to signal Single Logout should be performed -->
+    <beans:bean id="requestSingleLogoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+        <beans:constructor-arg value="https://${cas.ip}:${cas.port}/cas/logout"/>
+        <beans:constructor-arg>
+            <beans:bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+        </beans:constructor-arg>
+        <beans:property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
+    </beans:bean>
 
     <!-- 权限拒绝处理器 -->
     <beans:bean id="accessDeniedHandler" class="psn.ifplusor.core.security.LocalAccessDeniedHandler"/>
@@ -68,27 +96,51 @@
                                                     order by re.priority"/>
     </beans:bean>
 
+
+    <!-- CAS -->
+    <beans:bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+        <beans:property name="service" value="https://localhost:9443/j_spring_cas_security_check"/>
+        <beans:property name="sendRenew" value="false"/>
+    </beans:bean>
+
+    <beans:bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+        <beans:property name="authenticationUserDetailsService">
+            <beans:bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+                <beans:constructor-arg ref="userDetailsService" />
+            </beans:bean>
+        </beans:property>
+        <beans:property name="serviceProperties" ref="serviceProperties" />
+        <beans:property name="ticketValidator">
+            <beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+                <beans:constructor-arg index="0" value="https://${cas.ip}:${cas.port}/cas" />
+            </beans:bean>
+        </beans:property>
+        <beans:property name="key" value="infoweb"/>
+    </beans:bean>
+
+
     <authentication-manager alias="authenticationManager">
         <!-- <authentication-provider user-service-ref="userDetailsService"/> -->
-        <authentication-provider>
+        <authentication-provider ref="casAuthenticationProvider">
             <!-- 使用 Digest 认证时，不支持加密
             <password-encoder hash="md5">
                 <salt-source system-wide="infoweb"/>
             </password-encoder> -->
-            <jdbc-user-service id="userDetailsService" data-source-ref="dataSource"
-                               users-by-username-query="select username,password,status as enabled from security_user where username=?"
-                               authorities-by-username-query="select u.username,r.name as authority from security_user u
+        </authentication-provider>
+    </authentication-manager>
+
+
+    <jdbc-user-service id="userDetailsService" data-source-ref="dataSource"
+                       users-by-username-query="select username,password,status as enabled from security_user where username=?"
+                       authorities-by-username-query="select u.username,r.name as authority from security_user u
                                                join security_user_role ur on u.id=ur.user_id
                                                join security_role r on r.id=ur.role_id where u.username=?"
-                               group-authorities-by-username-query="select g.id,g.groupname,r.name from security_group g
+                       group-authorities-by-username-query="select g.id,g.groupname,r.name from security_group g
                                                      join security_group_user gu on g.id=gu.group_id
                                                      join security_user u on u.id=gu.user_id
                                                      join security_group_role gr on g.id=gr.group_id
                                                      join security_role r on r.id=gr.role_id
                                                      where u.username=?"/>
-        </authentication-provider>
-    </authentication-manager>
-
 
     <!-- 切换用户 -->
     <beans:bean id="switchUserProcessingFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter" autowire="byType">

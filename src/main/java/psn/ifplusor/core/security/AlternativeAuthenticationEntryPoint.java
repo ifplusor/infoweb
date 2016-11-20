@@ -1,6 +1,7 @@
 package psn.ifplusor.core.security;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class AlternativeAuthenticationEntryPoint implements AuthenticationEntryPoint,
         InitializingBean {
 
+    private CasAuthenticationEntryPoint casEntryPoint = null;
     private LoginUrlAuthenticationEntryPoint formEntryPoint = null;
     private DigestAuthenticationEntryPoint digestEntryPoint = null;
 
@@ -22,11 +24,16 @@ public class AlternativeAuthenticationEntryPoint implements AuthenticationEntryP
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Assert.isTrue((formEntryPoint!=null) || (digestEntryPoint!=null), "must have one AuthenticationEntry Point");
+        Assert.isTrue((casEntryPoint!=null) || (formEntryPoint!=null) || (digestEntryPoint!=null), "must have one AuthenticationEntry Point");
     }
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+
+        if (casEntryPoint != null) {
+            casEntryPoint.commence(request, response, authException);
+            return;
+        }
 
         if (formEntryPoint == null || digestEntryPoint == null) {
             if (formEntryPoint == null) {
@@ -49,6 +56,10 @@ public class AlternativeAuthenticationEntryPoint implements AuthenticationEntryP
                 formEntryPoint.commence(request, response, authException);
             }
         }
+    }
+
+    public void setCasEntryPoint(CasAuthenticationEntryPoint casEntryPoint) {
+        this.casEntryPoint = casEntryPoint;
     }
 
     public void setFormEntryPoint(LoginUrlAuthenticationEntryPoint formEntryPoint) {

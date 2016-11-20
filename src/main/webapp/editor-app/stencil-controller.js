@@ -24,7 +24,7 @@ angular.module('activitiModeler')
         // Property window toggle state
         $scope.propertyWindowState = {'collapsed': false};
 
-        // Add reference to global header-config
+        // Add reference to global header-conf
         $scope.headerConfig = KISBPM.HEADER_CONFIG;
 
         $scope.propertyWindowState.toggle = function () {
@@ -278,7 +278,7 @@ angular.module('activitiModeler')
                             selectedItem.title = selectedShape.properties[key];
                         }
 
-                        // First we check if there is a config for 'key-type' and then for 'type' alone
+                        // First we check if there is a conf for 'key-type' and then for 'type' alone
                         var propertyConfig = KISBPM.PROPERTY_CONFIG[key + '-' + property.type()];
                         if (propertyConfig === undefined || propertyConfig === null) {
                             propertyConfig = KISBPM.PROPERTY_CONFIG[property.type()];

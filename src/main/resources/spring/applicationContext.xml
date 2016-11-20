@@ -6,12 +6,12 @@
 
     <!-- load properties file -->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:config/infoweb.properties"/>
+        <property name="location" value="classpath:conf/infoweb.properties"/>
         <property name="fileEncoding" value="utf-8"/>
     </bean>
 
     <!-- scan the package and the sub package without Controller -->
-    <context:component-scan base-package="psn.ifplusor.infoweb">
+    <context:component-scan base-package="psn.ifplusor">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     

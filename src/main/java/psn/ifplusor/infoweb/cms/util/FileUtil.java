@@ -28,7 +28,7 @@ public class FileUtil {
     	Properties pps = new Properties();
     	InputStream in = null;
     	try {
-    		in = FileUtil.class.getClassLoader().getResourceAsStream("config/infoweb.properties");
+    		in = FileUtil.class.getClassLoader().getResourceAsStream("conf/infoweb.properties");
     		pps.load(in);
 			FILEDIR = pps.getProperty("cms.filedir");
 		} catch (IOException e) {

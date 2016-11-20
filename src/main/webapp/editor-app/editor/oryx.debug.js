@@ -2100,9 +2100,9 @@ if(!ORYX) var ORYX = {};
 
 ORYX = Object.extend(ORYX, {
 
-	//set the path in the config.js file!!!!
+	//set the path in the conf.js file!!!!
 	PATH: ORYX.CONFIG.ROOT_PATH,
-	//CONFIGURATION: "config.js",
+	//CONFIGURATION: "conf.js",
 
 	URLS: [],
 
@@ -2187,7 +2187,7 @@ ORYX = Object.extend(ORYX, {
 
 	/**
 	 * Second bootstrapping layer. The oryx configuration is checked. When not
-	 * yet loaded, config.js is being requested from the server. A repeated
+	 * yet loaded, conf.js is being requested from the server. A repeated
 	 * error in retrieving the configuration will result in an error to be
 	 * thrown after a certain time of retries. Once the configuration is there,
 	 * all urls that are registered with oryx loading are being requested from
@@ -12398,7 +12398,7 @@ ORYX.Editor = Clazz.extend(ORYX.Editor);
 /**
  * Creates a new ORYX.Editor instance by fetching a model from given url and passing it to the constructur
  * @param {String} modelUrl The JSON URL of a model.
- * @param {Object} config Editor config passed to the constructur, merged with the response of the request to modelUrl
+ * @param {Object} conf Editor conf passed to the constructur, merged with the response of the request to modelUrl
  */
 ORYX.Editor.createByUrl = function(modelUrl){
     new Ajax.Request(modelUrl, {

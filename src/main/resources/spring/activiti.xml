@@ -21,6 +21,15 @@
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="databaseSchemaUpdate" value="true"/>
 		<property name="jobExecutorActivate" value="false"/>
+
+		<property name="dbIdentityUsed" value="true"/>
+		<property name="customSessionFactories">
+			<list>
+				<bean class="psn.ifplusor.core.activiti.LocalUserEntityManagerFactory"/>
+				<bean class="psn.ifplusor.core.activiti.LocalGroupEntityManagerFactory"/>
+				<bean class="psn.ifplusor.core.activiti.LocalMembershipEntityManagerFactory"/>
+			</list>
+		</property>
 	</bean>
 
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
@@ -35,5 +44,4 @@
 	<bean id="taskService" factory-bean="processEngine" factory-method="getTaskService"/>
 	<bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
 	<bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
-
 </beans>
