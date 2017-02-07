@@ -17,7 +17,7 @@
 
     <http use-expressions="false" entry-point-ref="alternativeEntryPoint">
         <form-login login-page="/guest/login" authentication-failure-url="/guest/login?error=true" default-target-url="/" />
-        <logout logout-success-url="/cas-logout.jsp"/>
+        <logout logout-success-url="/guest/cas-logout.jsp"/>
         <anonymous username="Guest"/>
         <session-management session-fixation-protection="migrateSession">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>
@@ -58,7 +58,7 @@
     </beans:bean>
 
     <beans:bean id="alternativeEntryPoint" class="psn.ifplusor.core.security.AlternativeAuthenticationEntryPoint">
-        <beans:property name="casEntryPoint" ref="casEntryPoint"/>
+        <!--<beans:property name="casEntryPoint" ref="casEntryPoint"/>-->
         <beans:property name="formEntryPoint" ref="formEntryPoint"/>
         <beans:property name="digestEntryPoint" ref="digestEntryPoint"/>
         <beans:property name="useHeader" value="false"/>
@@ -120,13 +120,13 @@
 
 
     <authentication-manager alias="authenticationManager">
-        <!-- <authentication-provider user-service-ref="userDetailsService"/> -->
-        <authentication-provider ref="casAuthenticationProvider">
-            <!-- 使用 Digest 认证时，不支持加密
-            <password-encoder hash="md5">
+        <authentication-provider user-service-ref="userDetailsService"/>
+        <!--<authentication-provider ref="casAuthenticationProvider">-->
+            <!--使用 Digest 认证时，不支持加密-->
+            <!-- <password-encoder hash="md5">
                 <salt-source system-wide="infoweb"/>
             </password-encoder> -->
-        </authentication-provider>
+        <!--</authentication-provider>-->
     </authentication-manager>
 
 
@@ -144,7 +144,7 @@
 
     <!-- 切换用户 -->
     <beans:bean id="switchUserProcessingFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter" autowire="byType">
-        <beans:property name="targetUrl" value="/index.jsp"/>
+        <beans:property name="targetUrl" value="/"/>
     </beans:bean>
 
     <!-- <beans:bean id="userDetailsService" class="psn.ifplusor.core.security.UserInfoService"/> -->
