@@ -15,3 +15,6 @@ code    reason
 200     no authorized
 201     permission denied: file read
 202     permission denied: file write
+
+# 3XX room system
+301	    room not found

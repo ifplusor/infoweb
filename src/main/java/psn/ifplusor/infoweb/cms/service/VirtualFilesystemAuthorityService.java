@@ -26,13 +26,13 @@ public class VirtualFilesystemAuthorityService {
 	}
 	
 	public int relation(User user) {
-		User my = getCurrentUser();
+		User me = getCurrentUser();
 		
-		if (my.equals(user)) {
+		if (me.equals(user)) {
 			return 0;
 		}
 		
-		for (Group myGroup : my.getGroups()) {
+		for (Group myGroup : me.getGroups()) {
 			for (Group ownerGroup : user.getGroups()) {
 				if (myGroup.equals(ownerGroup)) {
 					return 1;
